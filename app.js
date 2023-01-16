@@ -8,7 +8,6 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 
 const AuthRouter = require("./Routes/authRoutes");
-const PuchaseRouter = require("./Routes/purchaseRoutes");
 const PaymentRouter = require("./Routes/paymentRoutes");
 
 const app = express();
@@ -29,7 +28,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", AuthRouter);
-app.use("/api/v1/purchase", PuchaseRouter);
 app.use("/api/v1/payment", PaymentRouter);
 
 app.all("*", (req, res, next) => {

@@ -3,6 +3,7 @@ const AppError = require("../Utils/appError");
 const catchAsync = require("../Utils/catchAsync");
 
 exports.createPaymentSchema = catchAsync(async (req, res, next) => {
+  const discountType = ["promo_code", "coupon_code"];
   const schema = Joi.object({
     cus_name: Joi.string().required(),
     cus_email: Joi.string().required(),
@@ -11,10 +12,14 @@ exports.createPaymentSchema = catchAsync(async (req, res, next) => {
     cus_add2: Joi.string().required(),
     cus_city: Joi.string().required(),
     cus_country: Joi.string().required(),
-    packageId: Joi.number().min(1).max(2).required(),
-    variationId: Joi.number().min(1).max(2).required(),
-    voucher_code: Joi.string(),
-    amount: Joi.number().required(),
+    package_id: Joi.number().min(1).max(2).required(),
+    variation_id: Joi.number().min(1).max(2).required(),
+    discountType: Joi.any().valid(...discountType),
+    discountCode: Joi.any().when("discountType", {
+      is: Joi.exist(),
+      then: Joi.valid().required(),
+      otherwise: Joi.valid({ place: Joi.forbidden() }),
+    }),
     currency: Joi.string().required(),
     desc: Joi.string().required(),
   });
@@ -26,8 +31,7 @@ exports.createPaymentSchema = catchAsync(async (req, res, next) => {
   };
 
   const value = await schema.validateAsync(req.body, options);
-  
-    req.body = value;
-    next();
-  
+
+  req.body = value;
+  next();
 });
