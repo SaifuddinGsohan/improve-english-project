@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model app_details {
+  id        Int         @id @default(autoincrement())
+  app_id    Int         @unique
+  name      String      @unique
+  app_users app_users[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([app_id, name])
+}
+
+model user {
+  id              Int     @id @default(autoincrement())
+  first_name      String?
+  last_name       String?
+  email           String  @unique
+  phone           String?
+  role            role    @default(user)
+  password        String
+  email_confirmed Boolean @default(false)
+
+  Comments  comments[]
+  blog      blog[]
+  app_users app_users[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([id, email])
+}
+
+model app_users {
+  id Int @id @default(autoincrement())
+
+  user_id     Int
+  email       String
+  app_id      Int
+  app_name    String
+  app_details app_details @relation(fields: [app_id, app_name], references: [app_id, name])
+
+  payment_status Boolean @default(false)
+
+  user user @relation(fields: [user_id, email], references: [id, email])
+
+  packages   packages[]
+  variations variations[]
+
+  purchase_info purchase_info[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([id, app_id, app_name])
+}
+
+model packages {
+  id     Int     @id @default(autoincrement())
+  name   String
+  title  String
+  status Boolean @default(true)
+
+  variations    variations[]
+  purchase_info purchase_info[]
+  app_users     app_users[]
+  promo_code    promo_code[]
+  coupon_code   coupon_code[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([id])
+}
+
+model variations {
+  id           Int     @id @default(autoincrement())
+  expiration   Int
+  bdt          Int
+  usd          Int     @default(0)
+  discount_bdt Int     @default(0)
+  discount_usd Int     @default(0)
+  status       Boolean @default(true)
+  package_id   Int
+
+  packages      packages        @relation(fields: [package_id], references: [id], onDelete: Cascade)
+  purchase_info purchase_info[]
+  app_users     app_users[]
+  promo_code    promo_code[]
+  coupon_code   coupon_code[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([id])
+}
+
+model promo_code {
+  id                     Int          @id @default(autoincrement())
+  code                   String
+  discount_type          discountType
+  discount_amount        Int
+  use_count              Int          @default(0)
+  affiliate_amount       Int          @default(0)
+  total_affiliate_amount Float        @default(0)
+  is_active              Boolean      @default(true)
+  package_id             Int
+  variation_id           Int
+
+  packages   packages   @relation(fields: [package_id], references: [id])
+  variations variations @relation(fields: [variation_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model coupon_code {
+  id              Int          @id @default(autoincrement())
+  code            String
+  discount_type   discountType
+  discount_amount Int
+  use_count       Int          @default(0)
+  is_active       Boolean      @default(true)
+  package_id      Int
+  variation_id    Int
+
+  packages   packages   @relation(fields: [package_id], references: [id])
+  variations variations @relation(fields: [variation_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model purchase_info {
+  id              Int          @id @default(autoincrement())
+  package_id      Int
+  variation_id    Int
+  app_uid         Int
+  cus_address     String
+  cus_city        String
+  cus_country     String
+  currency        currencyType
+  discount_amount Float        @default(00.00)
+
+  app_users  app_users  @relation(fields: [app_uid], references: [id])
+  packages   packages   @relation(fields: [package_id], references: [id])
+  variations variations @relation(fields: [variation_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model blog {
+  id          Int    @id @default(autoincrement())
+  user_id     Int
+  title       String
+  description String
+  snippet     String
+  image_url   String
+
+  cetegory_id   Int
+  clicks        Int?
+  likes         Int[]
+  meta_desc     String?
+  meta_title    String?
+  share         Int?
+  status        Boolean    @default(true)
+  url_Generator String?
+  comments      comments[]
+  categories    categories @relation(fields: [cetegory_id], references: [id])
+  user          user       @relation(fields: [user_id], references: [id])
+  keywords      keywords[] @relation("KeywordsToblog")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model categories {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+
+  blog blog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model keywords {
+  id Int @id @default(autoincrement())
+
+  name String
+  blog blog[] @relation("KeywordsToblog")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model comments {
+  id      Int    @id @default(autoincrement())
+  comment String
+  user_id Int
+  blog_id Int
+
+  blog blog @relation(fields: [blog_id], references: [id])
+  user user @relation(fields: [user_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum role {
+  user
+  instructor
+  moderator
+  admin
+}
+
+enum currencyType {
+  bdt
+  usd
+}
+
+enum discountType {
+  flat
+  percentage
+}
