@@ -112,9 +112,10 @@ exports.signIn = catchAsync(async (req, res, next) => {
   });
 
   const tokenData = {
-    id: user.id,
-    first_name: user.first_name,
-    last_name: user.last_name,
+    app_uid: isUserAlreadyInApp[0].id,
+    user_id: isUserAlreadyInApp[0].user_id,
+    app_id: isUserAlreadyInApp[0].app_id,
+    payment_status: isUserAlreadyInApp[0].payment_status,
   };
 
   if (isUserAlreadyInApp.length !== 0) {
@@ -122,9 +123,10 @@ exports.signIn = catchAsync(async (req, res, next) => {
     if (!validity) {
       return next(new AppError("Provided Wrong password", 403));
     }
+
     createJwtToken(tokenData, res, "login Successfull into Vocavive");
   } else {
-    await prisma.app_users.create({
+    const newAppUser = await prisma.app_users.create({
       data: {
         app_id: 3,
         app_name: "readvive",
@@ -132,6 +134,11 @@ exports.signIn = catchAsync(async (req, res, next) => {
         email: user.email,
       },
     });
+
+    (tokenData.app_uid = newAppUser.id),
+      (tokenData.user_id = newAppUser.user_id),
+      (tokenData.app_id = newAppUser.app_id),
+      (tokenData.payment_status = newAppUser.payment_status);
 
     createJwtToken(
       tokenData,
@@ -156,9 +163,9 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   const decoded = await jwt.verify(token, ACCESS_SECRET);
-  const currentUser = await prisma.user.findUnique({
+  const currentUser = await prisma.app_users.findUnique({
     where: {
-      id: decoded.id,
+      id: decoded.app_uid,
     },
   });
 

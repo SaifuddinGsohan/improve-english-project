@@ -9,81 +9,97 @@ datasource db {
 
 model app_details {
   id        Int         @id @default(autoincrement())
+  app_id    Int         @unique
   name      String      @unique
+  app_users app_users[]
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
-  app_id    Int         @unique
-  app_users app_users[]
 
   @@unique([app_id, name])
 }
 
 model user {
-  id              Int         @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
   first_name      String?
   last_name       String?
-  email           String      @unique
+  email           String  @unique
   phone           String?
-  role            role        @default(user)
+  role            role    @default(user)
   password        String
-  email_confirmed Boolean     @default(false)
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  app_users       app_users[]
-  blog            blog[]
-  Comments        comments[]
+  email_confirmed Boolean @default(false)
+
+  Comments  comments[]
+  blog      blog[]
+  app_users app_users[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([id, email])
 }
 
 model app_users {
-  id             Int             @id @default(autoincrement())
-  user_id        Int
-  email          String
-  app_id         Int
-  app_name       String
-  payment_status Boolean         @default(false)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  app_details    app_details     @relation(fields: [app_id, app_name], references: [app_id, name])
-  user           user            @relation(fields: [user_id, email], references: [id, email])
-  purchase_info  purchase_info[]
-  packages       packages[]      @relation("app_usersTopackages")
-  variations     variations[]    @relation("app_usersTovariations")
+  id Int @id @default(autoincrement())
+
+  user_id     Int
+  email       String
+  app_id      Int
+  app_name    String
+  app_details app_details @relation(fields: [app_id, app_name], references: [app_id, name])
+
+  payment_status Boolean @default(false)
+
+  user user @relation(fields: [user_id, email], references: [id, email])
+
+  packages   packages[]
+  variations variations[]
+
+  purchase_info purchase_info[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([id, app_id, app_name])
 }
 
 model packages {
-  id            Int             @id @unique @default(autoincrement())
-  name          String
-  title         String
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  status        Boolean         @default(true)
-  coupon_code   coupon_code[]
-  promo_code    promo_code[]
-  purchase_info purchase_info[]
+  id     Int     @id @default(autoincrement())
+  name   String
+  title  String
+  status Boolean @default(true)
+
   variations    variations[]
-  app_users     app_users[]     @relation("app_usersTopackages")
+  purchase_info purchase_info[]
+  app_users     app_users[]
+  promo_code    promo_code[]
+  coupon_code   coupon_code[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([id])
 }
 
 model variations {
-  id            Int             @id @unique @default(autoincrement())
-  expiration    Int
-  bdt           Int
-  usd           Int             @default(0)
-  status        Boolean         @default(true)
-  package_id    Int
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  discount_bdt  Int             @default(0)
-  discount_usd  Int             @default(0)
-  coupon_code   coupon_code[]
-  promo_code    promo_code[]
-  purchase_info purchase_info[]
+  id           Int     @id @default(autoincrement())
+  expiration   Int
+  bdt          Int
+  usd          Int     @default(0)
+  discount_bdt Int     @default(0)
+  discount_usd Int     @default(0)
+  status       Boolean @default(true)
+  package_id   Int
+
   packages      packages        @relation(fields: [package_id], references: [id], onDelete: Cascade)
-  app_users     app_users[]     @relation("app_usersTovariations")
+  purchase_info purchase_info[]
+  app_users     app_users[]
+  promo_code    promo_code[]
+  coupon_code   coupon_code[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([id])
 }
 
 model promo_code {
@@ -95,12 +111,14 @@ model promo_code {
   affiliate_amount       Int          @default(0)
   total_affiliate_amount Float        @default(0)
   is_active              Boolean      @default(true)
-  createdAt              DateTime     @default(now())
-  updatedAt              DateTime     @updatedAt
   package_id             Int
   variation_id           Int
-  packages               packages     @relation(fields: [package_id], references: [id])
-  variations             variations   @relation(fields: [variation_id], references: [id])
+
+  packages   packages   @relation(fields: [package_id], references: [id])
+  variations variations @relation(fields: [variation_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model coupon_code {
@@ -110,89 +128,100 @@ model coupon_code {
   discount_amount Int
   use_count       Int          @default(0)
   is_active       Boolean      @default(true)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
   package_id      Int
   variation_id    Int
-  packages        packages     @relation(fields: [package_id], references: [id])
-  variations      variations   @relation(fields: [variation_id], references: [id])
+
+  packages   packages   @relation(fields: [package_id], references: [id])
+  variations variations @relation(fields: [variation_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model purchase_info {
-  id              Int          @id @default(autoincrement())
-  package_id      Int
-  variation_id    Int
-  app_uid         Int
-  cus_address     String
-  cus_city        String
-  cus_country     String
+  id           Int @id @default(autoincrement())
+  package_id   Int
+  variation_id Int
+  app_uid      Int
+
   currency        currencyType
-  discount_amount Float        @default(0.00)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  discount_amount Float        @default(00.00)
   amount          Float
-  bank_txn        String
-  card_number     String
-  card_type       String
-  cus_phone       String
-  mer_txnid       String
-  pg_taxnid       String
-  service_charge  String
-  store_amount    String
-  app_users       app_users    @relation(fields: [app_uid], references: [id])
-  packages        packages     @relation(fields: [package_id], references: [id])
-  variations      variations   @relation(fields: [variation_id], references: [id])
+
+  service_charge String
+  card_number    String
+  cus_phone      String
+  pg_taxnid      String
+  mer_txnid      String
+  store_amount   String
+  bank_txn       String
+  card_type      String
+
+  app_users  app_users  @relation(fields: [app_uid], references: [id])
+  packages   packages   @relation(fields: [package_id], references: [id])
+  variations variations @relation(fields: [variation_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model blog {
-  id            Int        @id @default(autoincrement())
-  title         String
-  description   String
-  snippet       String
-  meta_title    String?
-  meta_desc     String?
-  url_Generator String?
-  likes         Int[]
+  id          Int    @id @default(autoincrement())
+  user_id     Int
+  title       String
+  description String
+  snippet     String
+  image_url   String
+
+  cetegory_id   Int
   clicks        Int?
+  likes         Int[]
+  meta_desc     String?
+  meta_title    String?
   share         Int?
   status        Boolean    @default(true)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  image_url     String
-  user_id       Int
-  cetegory_id   Int
+  url_Generator String?
+  comments      comments[]
   categories    categories @relation(fields: [cetegory_id], references: [id])
   user          user       @relation(fields: [user_id], references: [id])
-  comments      comments[]
   keywords      keywords[] @relation("KeywordsToblog")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model categories {
-  id          Int      @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   title       String
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  blog        blog[]
+
+  blog blog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model keywords {
-  id        Int      @id @default(autoincrement())
-  name      String
+  id Int @id @default(autoincrement())
+
+  name String
+  blog blog[] @relation("KeywordsToblog")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  blog      blog[]   @relation("KeywordsToblog")
 }
 
 model comments {
-  id        Int      @id @default(autoincrement())
-  comment   String
-  user_id   Int
-  blog_id   Int
+  id      Int    @id @default(autoincrement())
+  comment String
+  user_id Int
+  blog_id Int
+
+  blog blog @relation(fields: [blog_id], references: [id])
+  user user @relation(fields: [user_id], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  blog      blog     @relation(fields: [blog_id], references: [id])
-  user      user     @relation(fields: [user_id], references: [id])
 }
 
 enum role {

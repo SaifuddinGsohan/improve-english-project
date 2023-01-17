@@ -38,13 +38,11 @@ const aamarPay = async (body) => {
       type: "json",
     },
   });
-
   return result;
 };
 
 exports.createPayment = catchAsync(async (req, res, next) => {
   const { discountType, discountCode, package_id, variation_id } = req.body;
-  const tran_id = crypto.randomBytes(3 * 4).toString("base64");
   const details = await prisma.packages.findUnique({
     where: {
       id: package_id,
@@ -70,10 +68,34 @@ exports.createPayment = catchAsync(async (req, res, next) => {
     );
   }
 
+  const { id } = req.user;
+
+  const tran_id = crypto.randomBytes(3 * 4).toString("base64");
+  const packageAndVariationId = package_id + ":" + variation_id;
+
   const calAmountAfterVariationDiscount =
     details.variations[0].bdt - details.variations[0].discount_bdt;
 
+  const data = {
+    cus_name: req.body.cus_name,
+    cus_email: req.body.cus_email,
+    cus_phone: req.body.cus_phone,
+    cus_add1: req.body.cus_add1,
+    cus_add2: req.body.cus_add2,
+    cus_city: req.body.cus_city,
+    cus_country: req.body.cus_country,
+    tran_id,
+    app_uid: id,
+    amount: calAmountAfterVariationDiscount,
+    packageAndVariationId,
+    discountAmount: details.variations[0].discount_bdt,
+    currency: req.body.currency,
+    desc: req.body.desc,
+  };
+
   let codeDiscountAmount;
+  let finalAmountAfterCodeDiscountCal;
+  let totalDiscountAmount;
 
   if (discountType && discountType === "promo_code") {
     const discountAmount = await prisma.promo_code.findMany({
@@ -87,34 +109,39 @@ exports.createPayment = catchAsync(async (req, res, next) => {
     });
 
     if (discountAmount[0].discount_type === "percentage") {
-      codeDiscountAmount = (discountAmount / 100) * details.variations[0].bdt;
+      codeDiscountAmount =
+        (discountAmount[0].discount_amount / 100) * details.variations[0].bdt;
+    } else {
+      codeDiscountAmount = discountAmount[0].discount_amount;
+    }
+  } else if (discountType && discountType === "coupon_code") {
+    const discountAmount = await prisma.coupon_code.findMany({
+      where: {
+        code: discountCode,
+      },
+      select: {
+        discount_type: true,
+        discount_amount: true,
+      },
+    });
+
+    if (discountAmount[0].discount_type === "percentage") {
+      codeDiscountAmount =
+        (discountAmount[0].discount_amount / 100) * details.variations[0].bdt;
     } else {
       codeDiscountAmount = discountAmount[0].discount_amount;
     }
   }
 
-  const finalAmount = calAmountAfterVariationDiscount - codeDiscountAmount;
-  const totalDiscountAmount =
-    details.variations[0].discount_bdt + codeDiscountAmount;
+  if (codeDiscountAmount) {
+    finalAmountAfterCodeDiscountCal =
+      calAmountAfterVariationDiscount - codeDiscountAmount;
+    totalDiscountAmount =
+      details.variations[0].discount_bdt + codeDiscountAmount;
 
-  const packageAndVariationId = package_id + ":" + variation_id;
-
-  const data = {
-    cus_name: req.body.cus_name,
-    cus_email: req.body.cus_email,
-    cus_phone: req.body.cus_phone,
-    cus_add1: req.body.cus_add1,
-    cus_add2: req.body.cus_add2,
-    cus_city: req.body.cus_city,
-    cus_country: req.body.cus_country,
-    tran_id,
-    app_uid,
-    amount: finalAmount,
-    packageAndVariationId,
-    discountAmount: totalDiscountAmount,
-    currency: req.body.currency,
-    desc: req.body.desc,
-  };
+    data.amount = finalAmountAfterCodeDiscountCal;
+    data.discountAmount = totalDiscountAmount;
+  }
 
   const paymentUrl = await aamarPay(data);
 
@@ -129,26 +156,43 @@ exports.createPayment = catchAsync(async (req, res, next) => {
 });
 
 exports.paymentSuccess = catchAsync(async (req, res, next) => {
-  console.log(req.body);
-  // const data = {
-  //   package_id: req.body.opt_a,
-  //   variation_id: req.body.opt_b,
-  //   app_uid,
+  const { opt_a, opt_b, opt_c } = req.body;
+  const packageAndVariationArray = opt_b.split(":");
+  const package_id = packageAndVariationArray[0];
+  const variation_id = packageAndVariationArray[1];
+  const data = {
+    app_uid: Number(opt_a),
+    package_id: Number(package_id),
+    variation_id: Number(variation_id),
 
-  //   currency: req.body.currency_merchant,
-  //   discount_amount: req.body.opt_c,
-  //   amount: req.body.acmount,
+    currency: "bdt",
+    discount_amount: parseFloat(opt_c),
+    amount: parseFloat(req.body.amount),
 
-  //   service_charge: req.body.pg_service_charge_bdt,
-  //   card_number: req.body.card_number,
-  //   cus_phone: req.body.cus_phone,
-  //   pg_taxnid: req.body.pg_txnid,
-  //   mer_txnid: req.body.mer_txnid,
-  //   store_amount: store_amount,
-  //   bank_txn: req.body.bank_txn,
-  //   card_type: req.body.card_type,
-  // };
-  res.status(200).json(req.body);
+    service_charge: req.body.pg_service_charge_bdt,
+    card_number: req.body.card_number,
+    cus_phone: req.body.cus_phone,
+    pg_taxnid: req.body.pg_txnid,
+    mer_txnid: req.body.mer_txnid,
+    store_amount: req.body.store_amount,
+    bank_txn: req.body.bank_txn,
+    card_type: "bKash-bKash",
+  };
+
+  await prisma.purchase_info.create({
+    data: data,
+  });
+
+  await prisma.app_users.update({
+    where: {
+      id: Number(opt_a),
+    },
+    data: {
+      payment_status: true,
+    },
+  });
+
+  res.status(200).json("payment status updated");
 });
 
 exports.paymentFailed = (req, res) => {
