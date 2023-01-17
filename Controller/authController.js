@@ -78,7 +78,6 @@ exports.signup = catchAsync(async (req, res) => {
     },
   });
 
-
   const tokenData = {
     app_uid: user.app_users[0].id,
     user_id: user.app_users[0].user_id,
@@ -126,7 +125,7 @@ exports.signIn = catchAsync(async (req, res, next) => {
       return next(new AppError("Provided Wrong password", 403));
     }
 
-    createJwtToken(tokenData, res, "login Successfull into Vocavive");
+    createJwtToken(tokenData, res, "login Successfull into readvive");
   } else {
     const newAppUser = await prisma.app_users.create({
       data: {
@@ -168,6 +167,16 @@ exports.protect = catchAsync(async (req, res, next) => {
   const currentUser = await prisma.app_users.findUnique({
     where: {
       id: decoded.app_uid,
+    },
+    include: {
+      user: {
+        select: {
+          first_name: true,
+          last_name: true,
+          email: true,
+          phone: true,
+        },
+      },
     },
   });
 

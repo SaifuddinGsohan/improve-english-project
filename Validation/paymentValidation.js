@@ -4,9 +4,6 @@ const catchAsync = require("../Utils/catchAsync");
 exports.createPaymentSchema = catchAsync(async (req, res, next) => {
   const discountType = ["promo_code", "coupon_code"];
   const schema = Joi.object({
-    cus_name: Joi.string().required(),
-    cus_email: Joi.string().required(),
-    cus_phone: Joi.string().min(11).max(11).required(),
     cus_add1: Joi.string().required(),
     cus_add2: Joi.string().required(),
     cus_city: Joi.string().required(),

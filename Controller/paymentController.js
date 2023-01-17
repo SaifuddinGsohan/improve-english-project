@@ -69,6 +69,11 @@ exports.createPayment = catchAsync(async (req, res, next) => {
   }
 
   const { id } = req.user;
+  const { first_name, last_name, email, phone } = req.user.user;
+
+  console.log(first_name, last_name, email, phone);
+
+  const cus_name = first_name + " " + last_name;
 
   const tran_id = crypto.randomBytes(3 * 4).toString("base64");
   const packageAndVariationId = package_id + ":" + variation_id;
@@ -77,9 +82,9 @@ exports.createPayment = catchAsync(async (req, res, next) => {
     details.variations[0].bdt - details.variations[0].discount_bdt;
 
   const data = {
-    cus_name: req.body.cus_name,
-    cus_email: req.body.cus_email,
-    cus_phone: req.body.cus_phone,
+    cus_name,
+    cus_email: email,
+    cus_phone: phone,
     cus_add1: req.body.cus_add1,
     cus_add2: req.body.cus_add2,
     cus_city: req.body.cus_city,
