@@ -68,8 +68,8 @@ exports.signup = catchAsync(async (req, res) => {
       phone,
       app_users: {
         create: {
-          app_id: 3,
-          app_name: "readvive",
+          app_id: 3, //change app id
+          app_name: "readvive", //change app name
         },
       },
     },
@@ -78,10 +78,12 @@ exports.signup = catchAsync(async (req, res) => {
     },
   });
 
+
   const tokenData = {
-    id: user.id,
-    first_name: user.first_name,
-    last_name: user.last_name,
+    app_uid: user.app_users[0].id,
+    user_id: user.app_users[0].user_id,
+    app_id: user.app_users[0].app_id,
+    payment_status: user.app_users[0].payment_status,
   };
 
   createJwtToken(
@@ -162,7 +164,7 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError("You are not logged in. Please Log in to grant acess", 401)
     );
   }
-  const decoded = await jwt.verify(token, ACCESS_SECRET);
+  const decoded = jwt.verify(token, ACCESS_SECRET);
   const currentUser = await prisma.app_users.findUnique({
     where: {
       id: decoded.app_uid,

@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const AppError = require("../Utils/appError");
 const catchAsync = require("../Utils/catchAsync");
 
 exports.createPaymentSchema = catchAsync(async (req, res, next) => {
