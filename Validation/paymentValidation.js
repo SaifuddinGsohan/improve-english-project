@@ -9,7 +9,6 @@ exports.createPaymentSchema = catchAsync(async (req, res, next) => {
     cus_city: Joi.string().required(),
     cus_country: Joi.string().required(),
     package_id: Joi.number().min(1).max(2).required(),
-    variation_id: Joi.number().min(1).max(2).required(),
     discountType: Joi.any().valid(...discountType),
     discountCode: Joi.any().when("discountType", {
       is: Joi.exist(),

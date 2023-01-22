@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/Edvive/readvive_api#readme",
   "dependencies": {
-    "@prisma/client": "^4.8.1",
+    "@prisma/client": "^4.9.0",
     "axios": "^1.2.2",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
@@ -35,6 +35,6 @@
     "pug": "^3.0.2"
   },
   "devDependencies": {
-    "prisma": "^4.8.1"
+    "prisma": "^4.9.0"
   }
 }

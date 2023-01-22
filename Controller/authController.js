@@ -36,8 +36,9 @@ exports.refreshToken = catchAsync(async (req, res, next) => {
       id: decoded.id,
     },
     select: {
-      email: true,
-      role: true,
+      id: true,
+      first_name: true,
+      last_name: true,
     },
   });
 
@@ -53,7 +54,7 @@ exports.refreshToken = catchAsync(async (req, res, next) => {
 });
 
 exports.signup = catchAsync(async (req, res) => {
-  const { first_name, last_name, email, password, phone } = req.body;
+  const { first_name, last_name, email, password, phone, role } = req.body;
 
   const salt = await bcrypt.genSalt(10);
 
@@ -65,24 +66,15 @@ exports.signup = catchAsync(async (req, res) => {
       last_name,
       email,
       password: hash,
+      role: role,
       phone,
-      app_users: {
-        create: {
-          app_id: 3, //change app id
-          app_name: "readvive", //change app name
-        },
-      },
-    },
-    include: {
-      app_users: true,
     },
   });
 
   const tokenData = {
-    app_uid: user.app_users[0].id,
-    user_id: user.app_users[0].user_id,
-    app_id: user.app_users[0].app_id,
-    payment_status: user.app_users[0].payment_status,
+    id: user.id,
+    first_name: user.first_name,
+    last_name: user.last_name,
   };
 
   createJwtToken(
@@ -93,6 +85,7 @@ exports.signup = catchAsync(async (req, res) => {
 });
 
 exports.signIn = catchAsync(async (req, res, next) => {
+  console.log(req.body);
   const { email, password } = req.body;
 
   const user = await prisma.user.findUnique({
@@ -105,48 +98,17 @@ exports.signIn = catchAsync(async (req, res, next) => {
     return next(new AppError("User not exist in the database!", 404));
   }
 
-  const isUserAlreadyInApp = await prisma.app_users.findMany({
-    where: {
-      email: email,
-      app_id: 3,
-    },
-  });
-
   const tokenData = {
-    app_uid: isUserAlreadyInApp[0].id,
-    user_id: isUserAlreadyInApp[0].user_id,
-    app_id: isUserAlreadyInApp[0].app_id,
-    payment_status: isUserAlreadyInApp[0].payment_status,
+    id: user.id,
+    first_name: user.first_name,
+    last_name: user.last_name,
   };
 
-  if (isUserAlreadyInApp.length !== 0) {
-    const validity = bcrypt.compare(password, user.password);
-    if (!validity) {
-      return next(new AppError("Provided Wrong password", 403));
-    }
-
-    createJwtToken(tokenData, res, "login Successfull into readvive");
-  } else {
-    const newAppUser = await prisma.app_users.create({
-      data: {
-        app_id: 3,
-        app_name: "readvive",
-        user_id: user.id,
-        email: user.email,
-      },
-    });
-
-    (tokenData.app_uid = newAppUser.id),
-      (tokenData.user_id = newAppUser.user_id),
-      (tokenData.app_id = newAppUser.app_id),
-      (tokenData.payment_status = newAppUser.payment_status);
-
-    createJwtToken(
-      tokenData,
-      res,
-      "login successfull readvive with new user creation"
-    );
+  const validity = bcrypt.compare(password, user.password);
+  if (!validity) {
+    return next(new AppError("Provided Wrong password", 403));
   }
+  createJwtToken(tokenData, res, "login Successfull into readvive");
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -164,19 +126,9 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   const decoded = jwt.verify(token, ACCESS_SECRET);
-  const currentUser = await prisma.app_users.findUnique({
+  const currentUser = await prisma.user.findUnique({
     where: {
-      id: decoded.app_uid,
-    },
-    include: {
-      user: {
-        select: {
-          first_name: true,
-          last_name: true,
-          email: true,
-          phone: true,
-        },
-      },
+      id: decoded.id,
     },
   });
 
