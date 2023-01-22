@@ -33,7 +33,7 @@ model packages {
   title    String
   currency currencyType
   price    Float
-  discount Float
+  discount Float        @default(00.00)
   status   Boolean      @default(true)
 
   purchase_info purchase_info[]
