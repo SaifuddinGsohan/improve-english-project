@@ -104,7 +104,7 @@ model passage {
   creator_id Int
   created_by String
 
-  quize quize[]
+  quiz quiz[]
 
   user user @relation(fields: [creator_id, created_by], references: [id, first_name])
 
@@ -112,7 +112,7 @@ model passage {
   updatedAt DateTime @updatedAt
 }
 
-model quize {
+model quiz {
   id       Int     @id @default(autoincrement())
   question String
   opt_a    Boolean @default(false)
@@ -125,6 +125,9 @@ model quize {
 
   passage    passage    @relation(fields: [passage_id], references: [id])
   categories categories @relation(fields: [categories_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model categories {
@@ -132,7 +135,7 @@ model categories {
   title       String
   description String?
 
-  quize quize[]
+  quiz quiz[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
