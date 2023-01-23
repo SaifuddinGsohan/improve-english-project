@@ -115,16 +115,32 @@ model passage {
 model quiz {
   id       Int     @id @default(autoincrement())
   question String
-  opt_a    Boolean @default(false)
-  opt_b    Boolean @default(false)
-  opt_c    Boolean @default(false)
-  opt_d    Boolean @default(false)
+  opt_a    String
+  opt_b    String
+  opt_c    String
+  opt_d   String
 
   passage_id    Int
   categories_id Int
-
+  quiz_answer   quiz_answer ?
   passage    passage    @relation(fields: [passage_id], references: [id])
   categories categories @relation(fields: [categories_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model quiz_answer {
+  id Int @id @default(autoincrement())
+
+  quiz_id   Int @unique
+
+  opt_a    Boolean  @default(false)
+  opt_b    Boolean @default(false)
+  opt_c    Boolean  @default(false)
+  opt_d   Boolean  @default(false)
+
+  quiz    quiz    @relation(fields: [quiz_id], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
