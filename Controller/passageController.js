@@ -54,8 +54,6 @@ exports.updatePassage = catchAsync(async (req, res, next) => {
     passage: req.body.passage,
     summary: req.body.summary,
     level: req.body.level,
-    creator_id: req.user.id,
-    created_by: req.user.first_name,
   };
   const passage = await prisma.passage.update({
     where: {
@@ -80,5 +78,8 @@ exports.deletePassage = catchAsync(async (req, res, next) => {
       id: Number(id),
     },
   });
+  res.status(200).json({
+    status: "success",
+    message: `Passage deleted successfully with that id :${id}`,
+  });
 });
-
