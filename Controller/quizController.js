@@ -68,20 +68,27 @@ exports.getQuiz = catchAsync(async (req, res, next) => {
 
 exports.updateQuiz = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const data = {
-    passage_id: req.body.passage_id,
-    categories_id: req.body.categories_id,
-    question: req.body.question,
-    opt_a: req.body.opt_a,
-    opt_b: req.body.opt_b,
-    opt_c: req.body.opt_c,
-    opt_d: req.body.opt_d,
-  };
+
   const quiz = await prisma.quiz.update({
     where: {
       id: Number(id),
     },
-    data: data,
+    data: {
+      type: req.body.type,
+      question: req.body.question,
+      opt_a: req.body.opt_a,
+      opt_b: req.body.opt_b,
+      opt_c: req.body.opt_c,
+      opt_d: req.body.opt_d,
+      quiz_answer: {
+        update: {
+          ans_a: req.body.ans_a,
+          ans_b: req.body.ans_b,
+          ans_c: req.body.ans_c,
+          ans_d: req.body.ans_d,
+        },
+      },
+    },
   });
   if (!quiz) {
     return next(new AppError(`Quiz not found with that id :${id}`, 404));

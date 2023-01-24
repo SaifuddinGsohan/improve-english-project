@@ -9,6 +9,7 @@ exports.createPackage = catchAsync(async (req, res, next) => {
     currency: req.body.currency,
     price: req.body.price,
     discount: req.body.discount,
+    expiration: req.body.expiration,
   };
 
   await prisma.packages.create({

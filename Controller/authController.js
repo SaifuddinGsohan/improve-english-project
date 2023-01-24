@@ -7,10 +7,10 @@ const AppError = require("../Utils/appError");
 
 const createJwtToken = async (tokenData, res, resMessage) => {
   const accessToken = jwt.sign(tokenData, ACCESS_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "100d",
   });
   const refreshToken = jwt.sign(tokenData, REFRESH_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "100d",
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
@@ -85,7 +85,6 @@ exports.signup = catchAsync(async (req, res) => {
 });
 
 exports.signIn = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   const { email, password } = req.body;
 
   const user = await prisma.user.findUnique({
@@ -137,8 +136,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError("The user belonging to this token does no longer exist", 401)
     );
   }
-
-  console.log(currentUser);
 
   req.user = currentUser;
   next();

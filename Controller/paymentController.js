@@ -10,6 +10,8 @@ const {
 } = require("../Config/constant");
 const AppError = require("../Utils/appError");
 const catchAsync = require("../Utils/catchAsync");
+const { dateCalculator } = require("../Utils/dateCalculator");
+const { date } = require("joi");
 
 const aamarPay = async (body) => {
   const result = await axios({
@@ -23,8 +25,8 @@ const aamarPay = async (body) => {
       cus_phone: body.cus_phone,
       cus_add1: body.cus_add1,
       cus_add2: body.cus_add2,
-      opt_a: body.app_uid,
-      opt_b: body.packageAndVariationId,
+      opt_a: body.user_id,
+      opt_b: body.packageAndExpiryDate,
       opt_c: body.discountAmount,
       cus_city: body.cus_city,
       cus_country: body.cus_country,
@@ -42,44 +44,34 @@ const aamarPay = async (body) => {
 };
 
 exports.createPayment = catchAsync(async (req, res, next) => {
-  const { discountType, discountCode, package_id, variation_id } = req.body;
-  const details = await prisma.packages.findUnique({
+  const { discountType, discountCode, package_id } = req.body;
+  const package = await prisma.packages.findUnique({
     where: {
       id: package_id,
     },
-
-    include: {
-      variations: {
-        where: {
-          id: variation_id,
-        },
-        select: {
-          status: true,
-          bdt: true,
-          discount_bdt: true,
-        },
-      },
-    },
   });
 
-  if (details.status === false || details.variations[0].status === false) {
+  if (!package) {
     return next(
-      new AppError(`Package or variation might not active right now`)
+      new AppError(`Package not found with that id :${package_id}`, 405)
     );
   }
 
-  const { id } = req.user;
-  const { first_name, last_name, email, phone } = req.user.user;
+  if (package.status === false) {
+    return next(new AppError(`Package might not active right now`));
+  }
 
-  console.log(first_name, last_name, email, phone);
+  const expiry_date = dateCalculator(package.expiration);
+
+  const packageAndExpiryDate = package_id + ":" + expiry_date;
+
+  const { id, first_name, last_name, email, phone } = req.user;
 
   const cus_name = first_name + " " + last_name;
 
   const tran_id = crypto.randomBytes(3 * 4).toString("base64");
-  const packageAndVariationId = package_id + ":" + variation_id;
 
-  const calAmountAfterVariationDiscount =
-    details.variations[0].bdt - details.variations[0].discount_bdt;
+  const calAmountAfterPackageDiscount = package.price - package.discount;
 
   const data = {
     cus_name,
@@ -90,10 +82,10 @@ exports.createPayment = catchAsync(async (req, res, next) => {
     cus_city: req.body.cus_city,
     cus_country: req.body.cus_country,
     tran_id,
-    app_uid: id,
-    amount: calAmountAfterVariationDiscount,
-    packageAndVariationId,
-    discountAmount: details.variations[0].discount_bdt,
+    user_id: id,
+    amount: calAmountAfterPackageDiscount,
+    packageAndExpiryDate,
+    discountAmount: package.discount,
     currency: req.body.currency,
     desc: req.body.desc,
   };
@@ -115,7 +107,7 @@ exports.createPayment = catchAsync(async (req, res, next) => {
 
     if (discountAmount[0].discount_type === "percentage") {
       codeDiscountAmount =
-        (discountAmount[0].discount_amount / 100) * details.variations[0].bdt;
+        (discountAmount[0].discount_amount / 100) * package.price;
     } else {
       codeDiscountAmount = discountAmount[0].discount_amount;
     }
@@ -132,7 +124,7 @@ exports.createPayment = catchAsync(async (req, res, next) => {
 
     if (discountAmount[0].discount_type === "percentage") {
       codeDiscountAmount =
-        (discountAmount[0].discount_amount / 100) * details.variations[0].bdt;
+        (discountAmount[0].discount_amount / 100) * package.price;
     } else {
       codeDiscountAmount = discountAmount[0].discount_amount;
     }
@@ -140,9 +132,8 @@ exports.createPayment = catchAsync(async (req, res, next) => {
 
   if (codeDiscountAmount) {
     finalAmountAfterCodeDiscountCal =
-      calAmountAfterVariationDiscount - codeDiscountAmount;
-    totalDiscountAmount =
-      details.variations[0].discount_bdt + codeDiscountAmount;
+      calAmountAfterPackageDiscount - codeDiscountAmount;
+    totalDiscountAmount = package.discount + codeDiscountAmount;
 
     data.amount = finalAmountAfterCodeDiscountCal;
     data.discountAmount = totalDiscountAmount;
@@ -162,15 +153,22 @@ exports.createPayment = catchAsync(async (req, res, next) => {
 
 exports.paymentSuccess = catchAsync(async (req, res, next) => {
   const { opt_a, opt_b, opt_c } = req.body;
-  const packageAndVariationArray = opt_b.split(":");
-  const package_id = packageAndVariationArray[0];
-  const variation_id = packageAndVariationArray[1];
-  const data = {
-    app_uid: Number(opt_a),
-    package_id: Number(package_id),
-    variation_id: Number(variation_id),
 
-    currency: "bdt",
+  console.log(req.body);
+
+  const packageIdAndExpiryDate = opt_b.split(":");
+  const package_id = packageIdAndExpiryDate[0];
+  //const expiry_date = packageIdAndExpiryDate[1];
+
+  const expiry_date = new Date(packageIdAndExpiryDate[1]);
+
+  console.log(expiry_date);
+
+  const data = {
+    user_id: Number(opt_a),
+    package_id: Number(package_id),
+    expiry_date,
+    currency: req.body.currency_merchant,
     discount_amount: parseFloat(opt_c),
     amount: parseFloat(req.body.amount),
 
@@ -186,15 +184,6 @@ exports.paymentSuccess = catchAsync(async (req, res, next) => {
 
   await prisma.purchase_info.create({
     data: data,
-  });
-
-  await prisma.app_users.update({
-    where: {
-      id: Number(opt_a),
-    },
-    data: {
-      payment_status: true,
-    },
   });
 
   res.status(200).json("payment status updated");

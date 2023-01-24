@@ -12,6 +12,7 @@ const PaymentRouter = require("./Routes/paymentRoutes");
 const PackagesRouter = require("./Routes/packagesRoutes");
 const PassageRouter = require("./Routes/passageRoutes");
 const QuizRouter = require("./Routes/quizRoutes");
+const DiscountRouter = require("./Routes/discountRoutes");
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use("/api/v1/payment", PaymentRouter);
 app.use("/api/v1/packages", PackagesRouter);
 app.use("/api/v1/passages", PassageRouter);
 app.use("/api/v1/quizes", QuizRouter);
+app.use("/api/v1/discount", DiscountRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
