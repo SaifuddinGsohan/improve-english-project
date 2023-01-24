@@ -36,6 +36,13 @@ exports.getPassage = catchAsync(async (req, res, next) => {
     where: {
       id: Number(id),
     },
+    include: {
+      quiz: {
+        include: {
+          quiz_answer: true,
+        },
+      },
+    },
   });
   if (!passage) {
     return next(new AppError(`Passage not found with that id:${id}`, 404));

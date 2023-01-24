@@ -113,18 +113,18 @@ model passage {
 }
 
 model quiz {
-  id       Int     @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
+  type     quizType
   question String
   opt_a    String
   opt_b    String
   opt_c    String
-  opt_d   String
+  opt_d    String
 
   passage_id    Int
-  categories_id Int
-  quiz_answer   quiz_answer ?
-  passage    passage    @relation(fields: [passage_id], references: [id])
-  categories categories @relation(fields: [categories_id], references: [id])
+  quiz_answer   quiz_answer?
+  passage       passage      @relation(fields: [passage_id], references: [id])
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -133,25 +133,14 @@ model quiz {
 model quiz_answer {
   id Int @id @default(autoincrement())
 
-  quiz_id   Int @unique
+  quiz_id Int @unique
 
-  opt_a    Boolean  @default(false)
-  opt_b    Boolean @default(false)
-  opt_c    Boolean  @default(false)
-  opt_d   Boolean  @default(false)
+  ans_a Boolean @default(false)
+  ans_b Boolean @default(false)
+  ans_c Boolean @default(false)
+  ans_d Boolean @default(false)
 
-  quiz    quiz    @relation(fields: [quiz_id], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model categories {
-  id          Int     @id @default(autoincrement())
-  title       String
-  description String?
-
-  quiz quiz[]
+  quiz quiz @relation(fields: [quiz_id], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -171,6 +160,11 @@ enum currencyType {
 enum discountType {
   flat
   percentage
+}
+
+enum quizType {
+  lexical
+  comprehensive
 }
 
 enum level {
