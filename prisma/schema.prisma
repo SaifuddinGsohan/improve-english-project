@@ -99,15 +99,15 @@ model purchase_info {
 }
 
 model passage {
-  id         Int    @id @default(autoincrement())
-  lession_no Int
-  title      String
-  passage    String
+  id          Int    @id @default(autoincrement())
+  lession_no  Int
+  title       String
+  passage     String
   passage_len Int
-  summary    String
-  level      level
-  creator_id Int
-  created_by String
+  summary     String
+  level       level
+  creator_id  Int
+  created_by  String
 
   quiz quiz[]
 
