@@ -6,7 +6,7 @@ exports.createQuiz = catchAsync(async (req, res, next) => {
   console.log(req.body);
   const quiz = await prisma.quiz.create({
     data: {
-      passage_id: req.body.passage_id,
+      lession_no: req.body.lession_no,
       type: req.body.type,
       question: req.body.question,
       opt_a: req.body.opt_a,

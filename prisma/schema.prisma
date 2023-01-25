@@ -17,8 +17,9 @@ model user {
   password        String
   email_confirmed Boolean @default(false)
 
-  passage       passage[]
-  purchase_info purchase_info[]
+  passage         passage[]
+  purchase_info   purchase_info[]
+  progress_report progress_report[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -28,13 +29,13 @@ model user {
 }
 
 model packages {
-  id       Int          @id @default(autoincrement())
-  name     String
-  title    String
-  currency currencyType
-  price    Float
-  discount Float        @default(00.00)
-  status   Boolean      @default(true)
+  id         Int          @id @default(autoincrement())
+  name       String
+  title      String
+  currency   currencyType
+  price      Float
+  discount   Float        @default(00.00)
+  status     Boolean      @default(true)
   expiration Int
 
   purchase_info purchase_info[]
@@ -98,10 +99,11 @@ model purchase_info {
 }
 
 model passage {
-  id Int @id @default(autoincrement())
-
+  id         Int    @id @default(autoincrement())
+  lession_no Int
   title      String
   passage    String
+  passage_len Int
   summary    String
   level      level
   creator_id Int
@@ -109,14 +111,18 @@ model passage {
 
   quiz quiz[]
 
+  progress_report progress_report?
+
   user user @relation(fields: [creator_id, created_by], references: [id, first_name])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([lession_no])
 }
 
 model quiz {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   type     quizType
   question String
   opt_a    String
@@ -124,10 +130,9 @@ model quiz {
   opt_c    String
   opt_d    String
 
-  passage_id    Int
-  quiz_answer   quiz_answer?
-  passage       passage      @relation(fields: [passage_id], references: [id], onDelete:  Cascade)
-
+  lession_no  Int
+  quiz_answer quiz_answer?
+  passage     passage      @relation(fields: [lession_no], references: [lession_no], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -143,10 +148,29 @@ model quiz_answer {
   ans_c Boolean @default(false)
   ans_d Boolean @default(false)
 
-  quiz quiz @relation(fields: [quiz_id], references: [id], onDelete: Cascade )
+  quiz quiz @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model progress_report {
+  id Int @id @default(autoincrement())
+
+  user_id Int
+
+  wpm           Int
+  lexical       Int
+  comprehension Int
+
+  lession_no Int
+
+  user      user     @relation(fields: [user_id], references: [id])
+  passage   passage  @relation(fields: [lession_no], references: [lession_no])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([lession_no])
 }
 
 enum role {

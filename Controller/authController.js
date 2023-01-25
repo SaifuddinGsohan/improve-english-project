@@ -141,6 +141,37 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.accessCheck = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+
+  if (req.user.role === "admin" || req.user.role === "moderator") {
+    next();
+  } else {
+    const expiry_date = await prisma.purchase_info.findMany({
+      where: {
+        user_id: Number(id),
+      },
+    });
+
+    if (expiry_date.length === 0) {
+      return next(
+        new AppError(`No payment recond with that user id ${id}`, 404)
+      );
+    }
+
+    const today = new Date();
+
+    if (expiry_date[0].expiry_date <= today) {
+      return next(
+        new AppError(`Access date Expired Please purchase again`, 498)
+      );
+    }
+    next();
+  }
+});
+
+exports.nextPassage = catchAsync(async (req, res, next) => {});
+
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {

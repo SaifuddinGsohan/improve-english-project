@@ -3,17 +3,15 @@ const authController = require("../Controller/authController");
 const passageController = require("../Controller/passageController");
 const router = express.Router();
 
+router.use(authController.protect, authController.accessCheck);
 router.get("", passageController.getPassages);
+router.get("/passage", passageController.getPassage);
 
-router.use(
-  authController.protect,
-  authController.restrictTo("admin", "moderator")
-);
-router.route("").post(passageController.createPassage);
+router.use(authController.restrictTo("admin", "moderator"));
+router.post("", passageController.createPassage);
 
 router
-  .route("/:id")
-  .get(passageController.getPassage)
+  .route("/passage")
   .put(passageController.updatePassage)
   .delete(passageController.deletePassage);
 
