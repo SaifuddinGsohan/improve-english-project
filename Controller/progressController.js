@@ -3,6 +3,21 @@ const catchAsync = require("../Utils/catchAsync");
 const prisma = require("../client");
 
 exports.createProgress = catchAsync(async (req, res, next) => {
+  const existenReport = await prisma.progress_report.findMany({
+    where: {
+      user_id: Number(req.user.id),
+      lession_no: Number(req.body.lession_no),
+    },
+  });
+
+  if (existenReport.length !== 0) {
+    return next(
+      new AppError(
+        `This is user already completed ${req.body.lession_no} no lession`
+      )
+    );
+  }
+
   const data = {
     user_id: req.user.id,
     wpm: req.body.wpm,
@@ -10,13 +25,15 @@ exports.createProgress = catchAsync(async (req, res, next) => {
     comprehension: req.body.comprehension,
     lession_no: req.body.lession_no,
   };
-  await prisma.progress_report.create({
+
+  const progress = await prisma.progress_report.create({
     data: data,
   });
 
   res.status(200).json({
     status: "success",
     message: `Lession no ${req.body.lession_no} created successfuly`,
+    data: progress,
   });
 });
 

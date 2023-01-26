@@ -9,6 +9,8 @@ router
   .get(promoController.getAllPromoCode)
   .post(discountValidation.promoSchema, promoController.createPromoCode);
 
+router.get("/promo/price", promoController.promoPrice);
+
 router
   .route("/promo/:id")
   .get(promoController.getAPromoCode)

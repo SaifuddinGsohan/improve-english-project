@@ -43,6 +43,29 @@ exports.getAPromoCode = catchAsync(async (req, res, next) => {
     .json({ status: "success", message: "Promo code found", data: data });
 });
 
+exports.promoPrice = catchAsync(async (req, res, next) => {
+  const { code } = req.query;
+  console.log(code);
+  const promoDetails = await prisma.promo_code.findMany({
+    where: {
+      code: code,
+    },
+    select: {
+      discount_amount: true,
+      discount_type: true,
+    },
+  });
+  if (promoDetails.length === 0) {
+    return next(new AppError(`No promo code found with that code  ${code}`));
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Get Promo code successfully",
+    data: promoDetails,
+  });
+});
+
 exports.updatePromoCode = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const data = {

@@ -111,7 +111,7 @@ model passage {
 
   quiz quiz[]
 
-  progress_report progress_report?
+  progress_report progress_report[]
 
   user user @relation(fields: [creator_id, created_by], references: [id, first_name])
 
@@ -163,14 +163,12 @@ model progress_report {
   lexical       Int
   comprehension Int
 
-  lession_no Int
+  lession_no Int  
 
   user      user     @relation(fields: [user_id], references: [id])
   passage   passage  @relation(fields: [lession_no], references: [lession_no])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([lession_no])
 }
 
 enum role {

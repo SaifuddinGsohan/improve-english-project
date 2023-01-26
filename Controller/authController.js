@@ -170,7 +170,16 @@ exports.accessCheck = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.nextPassage = catchAsync(async (req, res, next) => {});
+exports.nextPassage = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
+  const progressReport = await prisma.progress_report.findUnique({
+    where: {
+      user_id: Number(id),
+    },
+  });
+  console.log(progressReport);
+  next();
+});
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
