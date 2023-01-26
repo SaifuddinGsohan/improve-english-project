@@ -5,7 +5,11 @@ const router = express.Router();
 
 router.use(authController.protect, authController.accessCheck);
 router.get("", passageController.getPassages);
-router.get("/passage", passageController.getPassage);
+router.get(
+  "/passage",
+  authController.nextPassage,
+  passageController.getPassage
+);
 
 router.use(authController.restrictTo("admin", "moderator"));
 router.post("", passageController.createPassage);

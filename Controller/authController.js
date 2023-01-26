@@ -158,10 +158,9 @@ exports.accessCheck = catchAsync(async (req, res, next) => {
         new AppError(`No payment recond with that user id ${id}`, 404)
       );
     }
-
     const today = new Date();
 
-    if (expiry_date[0].expiry_date <= today) {
+    if (expiry_date[expiry_date.length - 1].expiry_date <= today) {
       return next(
         new AppError(`Access date Expired Please purchase again`, 498)
       );
@@ -171,13 +170,28 @@ exports.accessCheck = catchAsync(async (req, res, next) => {
 });
 
 exports.nextPassage = catchAsync(async (req, res, next) => {
+  if (req.user.role === "admin" || req.user.role === "moderator") {
+    return next();
+  }
+
   const { id } = req.user;
-  const progressReport = await prisma.progress_report.findUnique({
+  const { lession } = req.query;
+  if (lession == 1) return next();
+  const progressReport = await prisma.progress_report.findMany({
     where: {
       user_id: Number(id),
+      lession_no: Number(lession - 1),
     },
   });
-  console.log(progressReport);
+
+  if (progressReport.length === 0) {
+    return next(new AppError(`No lession found with that id ${lession}`, 404));
+  }
+
+  const { wpm, comprehension } = progressReport[0];
+  if (wpm < 180 || comprehension < 80) {
+    return next(new AppError(`lession locked based on previous report`, 423));
+  }
   next();
 });
 

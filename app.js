@@ -20,13 +20,16 @@ const app = express();
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
-app.use(morgan(':date[clf] ":method :url"'));
 app.use(cors());
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan(':date[clf] ":method :url"'));
+}
 
 app.get("/", (req, res) => {
   res.status(200).json("Edvive Readvive API 1.0");

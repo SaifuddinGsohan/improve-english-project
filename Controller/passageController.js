@@ -47,7 +47,6 @@ exports.getPassages = catchAsync(async (req, res, next) => {
 
 exports.getPassage = catchAsync(async (req, res, next) => {
   const { lession } = req.query;
-  console.log(req.query);
   const passage = await prisma.passage.findUnique({
     where: {
       lession_no: Number(lession),

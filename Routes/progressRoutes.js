@@ -7,5 +7,6 @@ router.use(authController.protect);
 
 router.post("", progressController.createProgress);
 router.get("", progressController.getAllProgress);
+router.put("", progressController.updateProgress);
 
 module.exports = router;

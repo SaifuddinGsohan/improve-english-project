@@ -13,7 +13,8 @@ exports.createProgress = catchAsync(async (req, res, next) => {
   if (existenReport.length !== 0) {
     return next(
       new AppError(
-        `This is user already completed ${req.body.lession_no} no lession`
+        `This is user already completed ${req.body.lession_no} no lession`,
+        409
       )
     );
   }
@@ -40,7 +41,7 @@ exports.createProgress = catchAsync(async (req, res, next) => {
 exports.getAllProgress = catchAsync(async (req, res, next) => {
   const progress = await prisma.progress_report.findMany();
   if (progress.length === 0) {
-    return next(new AppError(`No progress report found with this users`));
+    return next(new AppError(`No progress report found with this users`, 404));
   }
   res.status(200).json({
     status: "success",
@@ -50,29 +51,49 @@ exports.getAllProgress = catchAsync(async (req, res, next) => {
 });
 
 exports.updateProgress = catchAsync(async (req, res, next) => {
-  const { lession_no } = req.query;
+  const { lession } = req.query;
   const data = {
     wpm: req.body.wpm,
     lexical: req.body.lexical,
     comprehension: req.body.comprehension,
   };
-  const progress = await prisma.progress_report.update({
+
+  const existed = await prisma.progress_report.findMany({
     where: {
-      lession_no: Number(),
+      user_id: req.user.id,
+      lession_no: Number(lession),
     },
-    data: data,
   });
 
-  if (!progress) {
+  if (existed.length === 0) {
     return next(
       new AppError(
-        ` No progress record found with that lession no :${lession_no} `
+        ` No progress record found with that lession no :${lession} `,
+        404
       )
     );
   }
 
+  if (existed[0].wpm > req.body.wpm) {
+    data.wpm = existed[0].wpm;
+  }
+  if (existed[0].lexical > req.body.lexical) {
+    data.lexical = existed[0].lexical;
+  }
+  if (existed[0].comprehension > req.body.comprehension) {
+    data.comprehension = existed[0].comprehension;
+  }
+
+  const progress = await prisma.progress_report.update({
+    where: {
+      id: existed[0].id,
+    },
+    data: data,
+  });
+
   res.status(200).json({
     status: "success",
-    message: ` Progress report updated with that lession no :${lession_no}`,
+    message: ` Progress report updated with that lession no :${lession}`,
+    data: progress,
   });
 });
