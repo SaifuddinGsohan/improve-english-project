@@ -3,15 +3,46 @@ const catchAsync = require("../Utils/catchAsync");
 const prisma = require("../client");
 
 exports.getUsers = catchAsync(async (req, res, next) => {
-  const users = await prisma.user.findMany();
+  const users = await prisma.user.findMany({
+    select: {
+      first_name: true,
+      last_name: true,
+      phone: true,
+      email: true,
+    },
+  });
 
   if (users.length === 0) {
     return next(new AppError(`No users found in this database`, 404));
   }
 
-  res
-    .status(200)
-    .json({ status: "success", message: `Users data founds`, data: users });
+  res.status(200).json({
+    status: "success",
+    message: `Found ${users.length} users data`,
+    data: users,
+  });
+});
+
+exports.getSubscriber = catchAsync(async (req, res, next) => {
+  const subscriber = await prisma.user.findMany({
+    where: {
+      purchase_info: { some: {} },
+    },
+    select: {
+      first_name: true,
+      last_name: true,
+      phone: true,
+      email: true,
+    },
+  });
+  if (subscriber.length === 0) {
+    return next(new AppError(`No Subscriber found in this database`, 404));
+  }
+  res.status(200).json({
+    status: "success",
+    message: `Total ${subscriber.length} users found in this database`,
+    data: subscriber,
+  });
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
