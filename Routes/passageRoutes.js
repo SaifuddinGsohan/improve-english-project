@@ -3,7 +3,12 @@ const authController = require("../Controller/authController");
 const passageController = require("../Controller/passageController");
 const router = express.Router();
 
-router.use(authController.protect, authController.accessCheck);
+router.use(authController.protect);
+
+router.get("/passage/assessment", passageController.getPassage);
+
+router.use(authController.accessCheck);
+
 router.get("", passageController.getPassages);
 router.get(
   "/passage",

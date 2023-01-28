@@ -179,13 +179,17 @@ exports.nextPassage = catchAsync(async (req, res, next) => {
   const { id } = req.user;
   const { lession } = req.query;
 
-  if (lession == 0 || lession == 1) return next();
+  if (lession < 1 || lession > 90) {
+    return next(new AppError(`Access unavaiable`));
+  }
 
-  if (req.user.level === "intermediate" && lession <= 30) {
+  if (lession == 1) return next();
+
+  if (req.user.level === "intermediate" && lession <= 31) {
     return next();
   }
 
-  if (req.user.level === "advanced" && lession <= 60) {
+  if (req.user.level === "advanced" && lession <= 61) {
     return next();
   }
 
@@ -199,7 +203,7 @@ exports.nextPassage = catchAsync(async (req, res, next) => {
   if (!progressReport) {
     return next(
       new AppError(
-        `No Progress Report found with that lession no ${lession}`,
+        `No Progress Report found with that lession no ${lession - 1}`,
         404
       )
     );

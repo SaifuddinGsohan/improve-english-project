@@ -18,6 +18,11 @@ exports.createPassage = catchAsync(async (req, res, next) => {
     creator_id: req.user.id,
     created_by: req.user.first_name,
   };
+
+  if (req.body.lession_no === 0) {
+    data.level = "assessment";
+  }
+
   await prisma.passage.create({
     data: data,
   });
