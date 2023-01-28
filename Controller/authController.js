@@ -209,8 +209,8 @@ exports.nextPassage = catchAsync(async (req, res, next) => {
     );
   }
 
-  const { wpm, comprehension } = progressReport;
-  if (wpm < 180 || comprehension < 80) {
+  const { comprehension } = progressReport;
+  if (comprehension <= 60) {
     return next(new AppError(`lession locked based on previous report`, 423));
   }
   next();

@@ -11,6 +11,6 @@ router.get(
   userController.getUsers
 );
 
-router.get("/update-level", userController.updateUserLevel);
+router.put("/update-level", userController.updateUserLevel);
 
 module.exports = router;
