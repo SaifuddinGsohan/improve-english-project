@@ -16,6 +16,7 @@ model user {
   role            role    @default(user)
   password        String
   email_confirmed Boolean @default(false)
+  level           level   @default(beginner)
 
   passage         passage[]
   purchase_info   purchase_info[]
@@ -193,6 +194,7 @@ enum quizType {
 }
 
 enum level {
+  assessment
   beginner
   intermediate
   advanced

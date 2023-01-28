@@ -1,16 +1,20 @@
 const express = require("express");
+const authController = require("../Controller/authController");
 const promoController = require("../Controller/promoController");
 const couponController = require("../Controller/couponController");
 const discountValidation = require("../Validation/discountValidation");
 const router = express.Router();
 
+router.get("/promo/price", promoController.promoPrice);
+
+router.use(
+  authController.protect,
+  authController.restrictTo("admin", "moderator")
+);
 router
   .route("/promo")
   .get(promoController.getAllPromoCode)
   .post(discountValidation.promoSchema, promoController.createPromoCode);
-
-router.get("/promo/price", promoController.promoPrice);
-
 router
   .route("/promo/:id")
   .get(promoController.getAPromoCode)

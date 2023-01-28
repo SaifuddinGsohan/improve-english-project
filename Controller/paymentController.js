@@ -162,8 +162,6 @@ exports.paymentSuccess = catchAsync(async (req, res, next) => {
 
   const expiry_date = new Date(packageIdAndExpiryDate[1]);
 
-  console.log(expiry_date);
-
   const data = {
     user_id: Number(opt_a),
     package_id: Number(package_id),

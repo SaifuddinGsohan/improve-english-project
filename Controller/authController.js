@@ -75,6 +75,7 @@ exports.signup = catchAsync(async (req, res) => {
     id: user.id,
     first_name: user.first_name,
     last_name: user.last_name,
+    level: user.level,
   };
 
   createJwtToken(
@@ -101,6 +102,7 @@ exports.signIn = catchAsync(async (req, res, next) => {
     id: user.id,
     first_name: user.first_name,
     last_name: user.last_name,
+    level: user.level,
   };
 
   const validity = bcrypt.compare(password, user.password);
@@ -176,19 +178,34 @@ exports.nextPassage = catchAsync(async (req, res, next) => {
 
   const { id } = req.user;
   const { lession } = req.query;
-  if (lession == 1) return next();
-  const progressReport = await prisma.progress_report.findMany({
+
+  if (lession == 0 || lession == 1) return next();
+
+  if (req.user.level === "intermediate" && lession <= 30) {
+    return next();
+  }
+
+  if (req.user.level === "advanced" && lession <= 60) {
+    return next();
+  }
+
+  const progressReport = await prisma.progress_report.findFirst({
     where: {
       user_id: Number(id),
       lession_no: Number(lession - 1),
     },
   });
 
-  if (progressReport.length === 0) {
-    return next(new AppError(`No lession found with that id ${lession}`, 404));
+  if (!progressReport) {
+    return next(
+      new AppError(
+        `No Progress Report found with that lession no ${lession}`,
+        404
+      )
+    );
   }
 
-  const { wpm, comprehension } = progressReport[0];
+  const { wpm, comprehension } = progressReport;
   if (wpm < 180 || comprehension < 80) {
     return next(new AppError(`lession locked based on previous report`, 423));
   }

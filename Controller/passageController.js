@@ -34,6 +34,9 @@ exports.getPassages = catchAsync(async (req, res, next) => {
       level: true,
       title: true,
     },
+    orderBy: {
+      lession_no: "asc",
+    },
   });
   if (passages.length === 0) {
     return next(new AppError(`No passages in the database. Sorry!`, 404));

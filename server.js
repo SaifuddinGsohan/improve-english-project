@@ -9,7 +9,7 @@ process.on("uncaughtException", (err) => {
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 const app = require("./app");
 const { PORT } = require("./Config/constant");
-const port = PORT || 5002;
+const port = PORT || 5000;
 
 const server = app.listen(port, () => {
   console.log(`The server Readvive is running at port: ${port}`);

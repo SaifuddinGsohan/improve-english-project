@@ -7,10 +7,10 @@ const router = express.Router();
 
 router.get("", packagesController.getPackages);
 
-// router.use(
-//   authController.protect,
-//   authController.restrictTo("admin", "moderator")
-// );
+router.use(
+  authController.protect,
+  authController.restrictTo("admin", "moderator")
+);
 
 router.post("", packagesController.createPackage);
 
