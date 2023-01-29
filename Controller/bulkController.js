@@ -113,8 +113,8 @@ exports.getB2bUsers = catchAsync(async (req, res, next) => {
         select: {
           first_name: true,
           last_name: true,
-          email: true,
           phone: true,
+          email: true,
         },
       },
     },
@@ -147,8 +147,8 @@ exports.getAllB2bUsers = catchAsync(async (req, res, next) => {
         select: {
           first_name: true,
           last_name: true,
-          email: true,
           phone: true,
+          email: true,
         },
       },
     },

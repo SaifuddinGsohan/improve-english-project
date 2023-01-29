@@ -9,11 +9,10 @@ exports.BACKEND_BASE_API_URL =
 
 exports.NODE_ENV = process.env.NODE_ENV;
 exports.PORT = process.env.PORT;
-exports.ACCESS_SECRET = process.env.ACCESS_SECRET;
-exports.REFRESH_SECRET = process.env.REFRESH_SECRET;
+exports.JWT_SECRET = process.env.JWT_SECRET;
+exports.JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+exports.JWT_COOKIE_EXPIRES_IN = process.env.JWT_COOKIE_EXPIRES_IN;
 
 exports.AAMAR_PAY_API_URL = process.env.AAMAR_PAY_SANDBOX_URL;
 exports.AAMAR_PAY_STORE_ID = process.env.AAMAR_PAY_SANDBOX_STORE_ID;
 exports.AAMAR_PAY_SIGNATURE_KEY = process.env.AAMAR_PAY_SANDBOX_SIGNATURE_KEY;
-
-
