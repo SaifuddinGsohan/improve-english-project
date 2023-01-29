@@ -16,6 +16,7 @@ const QuizRouter = require("./Routes/quizRoutes");
 const ProgressRouter = require("./Routes/progressRoutes");
 const DiscountRouter = require("./Routes/discountRoutes");
 const BulkRouter = require("./Routes/bulkRoutes");
+const FeedbackRouter = require("./Routes/feedbackRoutes");
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api/v1/passages", PassageRouter);
 app.use("/api/v1/quizes", QuizRouter);
 app.use("/api/v1/progress", ProgressRouter);
 app.use("/api/v1/bulk", BulkRouter);
+app.use("/api/v1/feedback", FeedbackRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));

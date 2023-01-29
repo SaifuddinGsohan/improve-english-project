@@ -173,6 +173,21 @@ model progress_report {
   updatedAt DateTime @updatedAt
 }
 
+model feedback {
+  id Int @id @default(autoincrement())
+
+  title    String
+
+  min_range Int
+  max_range Int
+
+  feedback  String
+  img_url   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 enum role {
   user
   b2b
