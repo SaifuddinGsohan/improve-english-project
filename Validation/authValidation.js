@@ -34,3 +34,16 @@ exports.signInUserValidation = catchAsync(async (req, res, next) => {
   req.body = value;
   next();
 });
+
+exports.updatePasswordValidation = catchAsync(async (req, res, next) => {
+  const schema = Joi.object({
+    currentPassword: Joi.string().min(8).required(),
+    password: Joi.string().min(8).required(),
+    confirmPassword: Joi.string().min(8).required(),
+  });
+
+  const value = await schema.validateAsync(req.body);
+
+  req.body = value;
+  next();
+});

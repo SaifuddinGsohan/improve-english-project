@@ -16,7 +16,7 @@ const signToken = (data) => {
   });
 };
 
-const createJwtToken = async (req, res, tokenData) => {
+const createSendToken = async (req, res, tokenData) => {
   const token = signToken(tokenData);
 
   const cookieOptions = {
@@ -58,7 +58,7 @@ exports.signup = catchAsync(async (req, res) => {
     level: user.level,
   };
 
-  createJwtToken(req, res, tokenData);
+  createSendToken(req, res, tokenData);
 });
 
 exports.signIn = catchAsync(async (req, res, next) => {
@@ -81,11 +81,12 @@ exports.signIn = catchAsync(async (req, res, next) => {
     level: user.level,
   };
 
-  const validity = bcrypt.compare(password, user.password);
+  const validity = await bcrypt.compare(password, user.password);
+
   if (!validity) {
     return next(new AppError("Provided Wrong password", 403));
   }
-  createJwtToken(req, res, tokenData);
+  createSendToken(req, res, tokenData);
 });
 
 exports.logout = (req, res) => {
@@ -213,3 +214,54 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+const hassPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
+};
+
+const correctPassword = async (candidatePassword, userPassword) => {
+  const validity = await bcrypt.compare(candidatePassword, userPassword);
+
+  if (validity) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  if (req.body.password !== req.body.confirmPassword) {
+    return next(new AppError(`password doesn't match`, 401));
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: Number(req.user.id),
+    },
+  });
+
+  if (!(await correctPassword(req.body.currentPassword, user.password))) {
+    return next(new AppError(`You current password is wrong.`, 401));
+  }
+
+  const newPassword = await hassPassword(req.body.password);
+
+  await prisma.user.update({
+    where: {
+      id: req.user.id,
+    },
+    data: {
+      password: newPassword,
+    },
+  });
+
+  const tokenData = {
+    id: user.id,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    level: user.level,
+  };
+
+  createSendToken(req, res, tokenData);
+});
