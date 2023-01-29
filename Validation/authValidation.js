@@ -2,7 +2,7 @@ const catchAsync = require("../Utils/catchAsync");
 const Joi = require("joi");
 
 exports.createUserValidation = catchAsync(async (req, res, next) => {
-  const role = ["admin", "moderator"];
+  const role = ["admin", "moderator", "b2b"];
   const schema = Joi.object({
     first_name: Joi.string().max(12).required(),
     last_name: Joi.string().max(12).required(),

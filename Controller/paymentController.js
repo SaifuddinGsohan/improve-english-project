@@ -53,7 +53,7 @@ exports.createPayment = catchAsync(async (req, res, next) => {
 
   if (!package) {
     return next(
-      new AppError(`Package not found with that id :${package_id}`, 405)
+      new AppError(`Package not found with that id :${package_id}`, 404)
     );
   }
 
@@ -153,8 +153,6 @@ exports.createPayment = catchAsync(async (req, res, next) => {
 
 exports.paymentSuccess = catchAsync(async (req, res, next) => {
   const { opt_a, opt_b, opt_c } = req.body;
-
-  console.log(req.body);
 
   const packageIdAndExpiryDate = opt_b.split(":");
   const package_id = packageIdAndExpiryDate[0];

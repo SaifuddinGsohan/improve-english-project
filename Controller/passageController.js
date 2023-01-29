@@ -33,16 +33,36 @@ exports.createPassage = catchAsync(async (req, res, next) => {
 });
 
 exports.getPassages = catchAsync(async (req, res, next) => {
-  const passages = await prisma.passage.findMany({
-    select: {
-      lession_no: true,
-      level: true,
-      title: true,
-    },
-    orderBy: {
-      lession_no: "asc",
-    },
-  });
+  const { level } = req.query;
+  console.log(level)
+  let passages;
+  if (level) {
+    passages = await prisma.passage.findMany({
+      where: {
+        level: level,
+      },
+      select: {
+        lession_no: true,
+        level: true,
+        title: true,
+      },
+      orderBy: {
+        lession_no: "asc",
+      },
+    });
+  } else {
+    passages = await prisma.passage.findMany({
+      select: {
+        lession_no: true,
+        level: true,
+        title: true,
+      },
+      orderBy: {
+        lession_no: "asc",
+      },
+    });
+  }
+
   if (passages.length === 0) {
     return next(new AppError(`No passages in the database. Sorry!`, 404));
   }

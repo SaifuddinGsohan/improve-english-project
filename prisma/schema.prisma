@@ -91,6 +91,7 @@ model purchase_info {
   store_amount    String
   bank_txn        String
   card_type       String
+  b2b             String?
 
   packages packages @relation(fields: [package_id], references: [id])
   user     user     @relation(fields: [user_id], references: [id])
@@ -174,6 +175,7 @@ model progress_report {
 
 enum role {
   user
+  b2b
   moderator
   admin
 }
