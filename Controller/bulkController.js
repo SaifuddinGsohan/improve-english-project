@@ -108,6 +108,7 @@ exports.getB2bUsers = catchAsync(async (req, res, next) => {
       b2b: req.user.first_name,
     },
     select: {
+      b2b: true,
       expiry_date: true,
       user: {
         select: {
@@ -137,11 +138,14 @@ exports.getB2bUsers = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllB2bUsers = catchAsync(async (req, res, next) => {
+  const { name } = req.query;
   const users = await prisma.purchase_info.findMany({
     where: {
       mer_txnid: "b2b",
+      b2b: name,
     },
     select: {
+      b2b: true,
       expiry_date: true,
       user: {
         select: {
