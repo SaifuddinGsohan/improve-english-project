@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(authController.protect);
 
-router.get("/title");
+router.get("/text", feedbackController.getFeedbackText);
 
 router.post("", multer.single("img_url"), feedbackController.createFeedback);
 router.get("", feedbackController.getsFeedback);

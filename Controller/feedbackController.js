@@ -119,3 +119,36 @@ exports.deleteFeedback = catchAsync(async (req, res, next) => {
     message: `Feedback deleted successfully with that id: ${id}`,
   });
 });
+
+const compare = (min, max, result) => {
+  if (result <= max && result >= min) return true;
+};
+
+exports.getFeedbackText = catchAsync(async (req, res, next) => {
+  const { result } = req.query;
+
+  const allFeedback = await prisma.feedback.findMany();
+
+  let compareResult;
+
+  for (let i = 0; i < allFeedback.length; i++) {
+    compareResult = compare(
+      allFeedback[i].min_range,
+      allFeedback[i].max_range,
+      result
+    );
+
+    if (compareResult) {
+      return res.status(200).json({
+        status: "success",
+        message: `Found text based on result`,
+        data: allFeedback[i].feedback,
+      });
+    }
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: `No feedback found with this value ${result}`,
+  });
+});
