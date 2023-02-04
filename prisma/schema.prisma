@@ -165,7 +165,7 @@ model progress_report {
   lexical       Int
   comprehension Int
 
-  lession_no Int  
+  lession_no Int
 
   user      user     @relation(fields: [user_id], references: [id])
   passage   passage  @relation(fields: [lession_no], references: [lession_no])
@@ -176,13 +176,29 @@ model progress_report {
 model feedback {
   id Int @id @default(autoincrement())
 
-  title    String
+  title String
 
   min_range Int
   max_range Int
 
-  feedback  String
-  img_url   String
+  feedback String
+  img_url  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model landing_page {
+  id          Int    @id @unique
+  heading     String
+  sub_heading String
+  cta         String
+  fa_heading  String
+  fa_cta      String
+
+  landing_img1 String
+  landing_img2 String?
+  landing_img3 String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
