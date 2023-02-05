@@ -13,7 +13,11 @@
     "url": "git+https://github.com/Edvive/readvive_api.git"
   },
   "keywords": [],
-  "author": "Md Firoz Mia",
+  "author": {
+    "name": "Md Firoz Mia",
+    "email": "mdfirozmia321@gmail.com",
+    "url": "https://github.com/Firoz01"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Edvive/readvive_api/issues"

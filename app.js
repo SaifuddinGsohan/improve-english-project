@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 
 const AuthRouter = require("./Routes/authRoutes");
-const userRouter = require("./Routes/userRoutes");
+const UserRouter = require("./Routes/userRoutes");
 const PaymentRouter = require("./Routes/paymentRoutes");
 const PackagesRouter = require("./Routes/packagesRoutes");
 const PassageRouter = require("./Routes/passageRoutes");
@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", AuthRouter);
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/users", UserRouter);
 app.use("/api/v1/packages", PackagesRouter);
 app.use("/api/v1/payment", PaymentRouter);
 app.use("/api/v1/discount", DiscountRouter);

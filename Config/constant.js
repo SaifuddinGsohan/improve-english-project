@@ -15,6 +15,21 @@ exports.JWT_COOKIE_EXPIRES_IN = process.env.JWT_COOKIE_EXPIRES_IN;
 
 exports.PROJECT_ID = process.env.PROJECT_ID;
 
-exports.AAMAR_PAY_API_URL = process.env.AAMAR_PAY_SANDBOX_URL;
-exports.AAMAR_PAY_STORE_ID = process.env.AAMAR_PAY_SANDBOX_STORE_ID;
-exports.AAMAR_PAY_SIGNATURE_KEY = process.env.AAMAR_PAY_SANDBOX_SIGNATURE_KEY;
+// exports.AAMAR_PAY_API_URL = process.env.AAMAR_PAY_SANDBOX_URL;
+// exports.AAMAR_PAY_STORE_ID = process.env.AAMAR_PAY_SANDBOX_STORE_ID;
+// exports.AAMAR_PAY_SIGNATURE_KEY = process.env.AAMAR_PAY_SANDBOX_SIGNATURE_KEY;
+
+
+exports.AAMAR_PAY_API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.AAMAR_PAY_PRODUCTION_URL
+    : process.env.AAMAR_PAY_SANDBOX_URL;
+
+exports.AAMAR_PAY_STORE_ID =
+  process.env.NODE_ENV === "production"
+    ? process.env.AAMAR_PAY_PRODUCTION_STORE_ID
+    : process.env.AAMAR_PAY_SANDBOX_STORE_ID;
+exports.AAMAR_PAY_SIGNATURE_KEY =
+  process.env.NODE_ENV === "production"
+    ? process.env.AAMAR_PAY_PRODUCTION_SIGNATURE_KEY
+    : process.env.AAMAR_PAY_SANDBOX_SIGNATURE_KEY;
