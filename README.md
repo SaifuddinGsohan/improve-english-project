@@ -282,6 +282,7 @@ fetch the landing page data
 #### POST /api/v1/packages
 
 Create package only by valid admin or moderator
+By default package status will be true. Later you can change the status to false if you decide not to use a particular package
 
 ##### Example Body Data
 
