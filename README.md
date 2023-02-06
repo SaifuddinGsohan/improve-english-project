@@ -17,7 +17,7 @@ A list of technologies used within the project:
 ***
 
 | Name | Description | Example |
-|----------|----------|----------
+|----------|---------------------------|----------
 | NODE_ENV | Env variable mode  | production or development |
 | PORT | Running project in which port | 5000 |
 | JWT_SECRET | JWT token scret | edvive |
