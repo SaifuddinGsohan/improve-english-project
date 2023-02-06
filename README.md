@@ -277,6 +277,132 @@ fetch the landing page data
 
 ```
 
+### Packages
 
+#### POST /api/v1/packages
+
+Create package only by valid admin or moderator
+
+##### Example Body Data
+
+```json
+{
+    "name":"testing",
+    "title":"Testing Effectively with edvive",
+    "currency": "BDT",
+    "price":5000 ,
+    "discount": 999,
+    "expiration": 20
+}
+```
+then response will be
+
+```
+statusCode : 200
+```
+
+```json
+{
+    "status": "success",
+    "message": "Package Created Successfully"
+}
+```
+
+#### GET /api/v1/packages
+get all packages from database
+
+##### Example Response
+
+```json
+{
+    "status": "success",
+    "message": "found all packages",
+    "data": [
+        {
+            "id": 1,
+            "name": "edvive english",
+            "title": "Learn English Effectively with edvive",
+            "currency": "BDT",
+            "price": 2000,
+            "discount": 10,
+            "status": true,
+            "expiration": 1,
+            "createdAt": "2023-01-25T13:42:14.955Z",
+            "updatedAt": "2023-01-25T13:42:14.955Z"
+        },
+        {
+            "id": 2,
+            "name": "testing",
+            "title": "Testing Effectively with edvive",
+            "currency": "BDT",
+            "price": 5000,
+            "discount": 999,
+            "status": true,
+            "expiration": 20,
+            "createdAt": "2023-01-28T11:41:49.343Z",
+            "updatedAt": "2023-01-28T11:41:49.343Z"
+        },
+        {
+            "id": 3,
+            "name": "testing",
+            "title": "Testing Effectively with edvive",
+            "currency": "BDT",
+            "price": 5000,
+            "discount": 999,
+            "status": true,
+            "expiration": 20,
+            "createdAt": "2023-02-06T12:22:34.311Z",
+            "updatedAt": "2023-02-06T12:22:34.311Z"
+        }
+    ]
+}
+```
+
+#### GET /api/v1/packages/1
+
+get a package by package id providing in url params
+
+##### Example Response
+
+```json
+{
+    "status": "success",
+    "message": "Package found with that id:1",
+    "data": {
+        "id": 1,
+        "name": "edvive english",
+        "title": "Learn English Effectively with edvive",
+        "currency": "BDT",
+        "price": 2000,
+        "discount": 10,
+        "status": true,
+        "expiration": 1,
+        "createdAt": "2023-01-25T13:42:14.955Z",
+        "updatedAt": "2023-01-25T13:42:14.955Z"
+    }
+}
+```
+
+#### PUT /api/v1/packages/1
+
+Update a package by package id providing in url params
+
+##### Example Body Data
+
+```json
+{
+    "status":false
+}
+```
+You can choose one field or multiple field
+
+##### Example Response Data
+
+```json
+{
+    "status": "success",
+    "message": "Package Updated Successfully with that id :1"
+}
+```
 
 
