@@ -33,3 +33,250 @@ A list of technologies used within the project:
 | AAMAR_PAY_PRODUCTION_URL  | Production url |  https://secure.aamarpay.com/jsonpost.php |
 | AAMAR_PAY_PRODUCTION_STORE_ID | Production store id | edvive |
 | AAMAR_PAY_PRODUCTION_SIGNATURE_KEY  | Production key |  5729e8911563793773321ac8d8ac85bb |
+
+
+# Getting Started
+***
+
+## Prerequisites
+
+* Node.js and npm (Node Package Manager) installed on your system.
+
+## Installation
+
+Clone this repository and navigate to the project directory:
+
+```
+git clone https://github.com/Edvive/readvive_api.git
+cd readvive_api
+
+```
+Install the required packages using npm:
+```
+npm install
+```
+
+## Usage
+
+Start the server by running the following command:
+
+```
+npm run start-dev
+
+```
+The server will be started at http://localhost:5000 by default. You can change the port number by setting the PORT environment variable.
+
+## API Routes
+The following API routes are available in this server:
+
+### Auth
+
+#### POST /api/v1/auth/signup
+Create New account with this sign up process
+
+##### Example Body Data
+
+```json
+{  
+    "first_name":"Firoz",
+    "last_name":"Suvrow",
+    "email":"firozsuvrow@gmail.com",
+    "password":"abcd1234",
+    "confirm_password":"abcd1234",
+    "phone":"01912345678"
+}
+```
+If successfully user created then response will be:
+
+```json
+{
+    "status": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImZpcnN0X25hbWUiOiJGaXJveiIsImxhc3RfbmFtZSI6IlN1dnJvdyIsImxldmVsIjoiYmVnaW5uZXIiLCJpYXQiOjE2NzU2Nzc4NzEsImV4cCI6MTY4MzQ1Mzg3MX0.VX6TyxoMoqqVhe2JOhUFGUANz5M46lddWu7fK2D7MVw"
+}
+```
+
+And token also set into the cookies for the further authentication process
+
+Else if a user already created and trying to create again  then the server will give a status fail response like this:
+
+```json
+{
+    "status": "fail",
+    "message": "Duplicate fields value: email. Please use another value!"
+}
+```
+
+#### POST /api/v1/auth/signin
+
+Sign in route
+
+##### Example Body Data
+
+```json
+{
+    "email":"firozsuvrow@gmail.com",
+    "password":"abcd1234"
+}
+```
+
+##### Example Response
+
+```json
+{
+    "status": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImZpcnN0X25hbWUiOiJGaXJveiIsImxhc3RfbmFtZSI6IlN1dnJvdyIsImxldmVsIjoiYmVnaW5uZXIiLCJpYXQiOjE2NzU2Nzg0MjYsImV4cCI6MTY4MzQ1NDQyNn0.LdHO5UmSX-L9xKDpugCOQ5L5SIhaDU1_u9mOh-h9Nuk"
+}
+```
+And token also set into the cookies for the further authentication process same as sign up 
+
+If user provide wrong password then server response will be:
+
+```json
+{
+    "status": "fail",
+    "message": "Provided Wrong password"
+}
+```
+
+#### PUT /api/v1/auth/update-password
+update password
+
+##### Example Body Data
+
+```json
+{
+    "currentPassword":"abcd1234",
+    "password":"iloveu143",
+    "confirmPassword":"iloveu143"
+}
+```
+
+##### Example Response
+
+```json
+{
+    "status": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImZpcnN0X25hbWUiOiJGaXJveiIsImxhc3RfbmFtZSI6IlN1dnJvdyIsImxldmVsIjoiYmVnaW5uZXIiLCJpYXQiOjE2NzU2Nzg4MjUsImV4cCI6MTY4MzQ1NDgyNX0.ohFi33brO72l6cKGQSCJCVKMlf_sbWsVC5rgZ5Wsm5w"
+}
+```
+
+If Current password provided wrong then response will be:
+
+```json
+{
+    "status": "fail",
+    "message": "You current password is wrong."
+}
+```
+
+#### GET /api/v1/auth/logout
+Any kind of user can log out from server using this api route
+
+No need any body data just hit this api and you will be logout from the application
+
+##### Example Response
+```json
+{
+    "status": "success"
+}
+```
+
+### Admin Auth
+Create an Admin user
+#### POST /api/v1/auth/signup
+
+##### Example Body Data
+
+```json
+{
+    "first_name":"mohidul",
+    "last_name":"alom",
+    "email":"mohidulalom@gmail.com",
+    "password":"1234abcd",
+    "confirm_password":"1234abcd",
+    "role":"admin",
+    "phone":"01964941374"
+}
+```
+
+You can also able to create a moderator, b2b user using this route by changing role as a moderator or b2b.
+The main difference between user auth and admin auth is the defined role of an admin user
+And Response will be the same as user authentication response
+
+```json
+{
+    "status": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiZmlyc3RfbmFtZSI6Im1vaGlkdWwiLCJsYXN0X25hbWUiOiJhbG9tIiwibGV2ZWwiOiJiZWdpbm5lciIsImlhdCI6MTY3NTY3OTY5OSwiZXhwIjoxNjgzNDU1Njk5fQ.FzvJCya-bBcUh2r_x6xkRmhnF4CJ2WZbBdmScJVD99s"
+}
+```
+
+### Landing
+Only a valid admin user can be able to create landing page data
+
+#### POST /api/v1/landing
+
+##### landing body data will be form data:
+
+| KEY | VALUE |
+|----------|----------|
+| images | Screenshot from 2023-01-04 14-37-45.png | 
+| heading | readvive |
+| sub_heading | Learning english with edvive it will great fun |
+| cta | cta button text | 
+| fa_cta | fa_cta button text | 
+| fa_heading | fa_heading text | 
+
+
+
+If user is not valid then server response will be:
+
+```json
+{
+    "status": "fail",
+    "message": "You do not have permission to perform this action"
+}
+```
+
+If a landing page is created once then you can create a new one. You will only be able to update the previous landing page data:
+
+```
+statusCode : 409 Conflict
+```
+
+```json
+{
+    "status": "fail",
+    "message": "Landing Page already created"
+}
+```
+
+#### GET /api/v1/landing
+
+fetch the landing page data
+
+##### Example Response
+
+```json
+{
+    "status": "success",
+    "message": "Landing page information found",
+    "data": {
+        "id": 1,
+        "heading": "readvive",
+        "sub_heading": "this is readvive api",
+        "cta": "this is readvive cta",
+        "fa_heading": "this is fa heading",
+        "fa_cta": "this is fa button cta",
+        "landing_img1": "https://storage.googleapis.com/readvive/Screenshot_from_2023-01-04_14-37-45.png",
+        "landing_img2": null,
+        "landing_img3": null,
+        "createdAt": "2023-02-01T12:42:44.993Z",
+        "updatedAt": "2023-02-01T12:42:44.993Z"
+    }
+}
+
+```
+
+
+
+
