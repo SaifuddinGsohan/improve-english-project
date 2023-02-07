@@ -405,5 +405,140 @@ You can choose one field or multiple field
     "message": "Package Updated Successfully with that id :1"
 }
 ```
+### Passage
+
+#### POST /api/v1/passages
+Create a new post with this api
+
+##### Example Body Data:
+
+```json
+{   "lession_no":30,
+    "title":" go",
+    "passage":"Atik vai zindabad, the Passage SDK also provides a way to securely manage your users. These functions require authentication using a Passage API key.",
+    "summary":"Atik bro",
+    "level":"beginner"
+}
+```
+
+##### Response
+
+```json
+{
+    "status": "success",
+    "message": "Passage created succussfully"
+}
+```
+
+Every time for creating a new passage you need to provide a unique lesson otherwise server throw an error:
+
+```json
+{
+    "status": "fail",
+    "message": "Duplicate fields value: lession_no. Please use another value!"
+}
+```
+
+#### GET /api/v1/passages
+Get all passage from the database,To access this API you need to log in first otherwise it will show an authentication error
+##### Response
+
+```json
+{
+    "status": "success",
+    "message": "Found all 9 passages",
+    "data": [
+        {
+            "lession_no": 0,
+            "level": "assessment",
+            "title": " go"
+        },
+        {
+            "lession_no": 1,
+            "level": "advanced",
+            "title": "Node Js learning"
+        },
+        {
+            "lession_no": 2,
+            "level": "advanced",
+            "title": " react Js learning"
+        },
+        {
+            "lession_no": 3,
+            "level": "advanced",
+            "title": " go"
+        },
+        {
+            "lession_no": 4,
+            "level": "advanced",
+            "title": " Php"
+        },
+        {
+            "lession_no": 29,
+            "level": "beginner",
+            "title": " go"
+        },
+        {
+            "lession_no": 30,
+            "level": "beginner",
+            "title": " go"
+        },
+        {
+            "lession_no": 31,
+            "level": "advanced",
+            "title": " go"
+        },
+        {
+            "lession_no": 32,
+            "level": "advanced",
+            "title": " go"
+        }
+    ]
+}
+```
+
+you can access categorised passages like 
+  assessment,
+  beginner,
+  intermediate,
+  advanced,
+  
+  /api/v1/passages?level=advanced
+  
+  #### Response 
+  ```json
+  {
+    "status": "success",
+    "message": "Found all 6 passages",
+    "data": [
+        {
+            "lession_no": 1,
+            "level": "advanced",
+            "title": "Node Js learning"
+        },
+        {
+            "lession_no": 2,
+            "level": "advanced",
+            "title": " react Js learning"
+        },
+        {
+            "lession_no": 3,
+            "level": "advanced",
+            "title": " go"
+        },
+    ]
+}
+  ```
+  
+ If you are a authenticated user but your payment step did not complete then you get an error
+ 
+ ```json
+ {
+    "status": "fail",
+    "message": "No payment recond with that user id 13"
+}
+ ```
+ 
+ Otherwise you will get passages
 
 
