@@ -542,3 +542,32 @@ you can access categorised passages like
  Otherwise you will get passages
 
 
+#### GET /api/v1/passages/passage?lession=29
+Get a passage
+
+When you are trying to get a passage for the user account server check your previous passage quiz and other markings. If you passed your previous passage quiz then you can access the next passage for example: Right now you want to access the lesson 29th passage server will check the marking of your 28th lesson if you passed then can access the 29th passage.
+This condition is only for the authenticated user not for admin users. Admin can access any passage without condition
+
+##### Response
+
+```json
+{
+    "status": "success",
+    "message": "Passage found with that lession no: 29",
+    "data": {
+        "id": 13,
+        "lession_no": 29,
+        "title": " go",
+        "passage": "Atik vai zindabad, the Passage SDK also provides a way to securely manage your users. These functions require authentication using a Passage API key.",
+        "passage_len": 24,
+        "summary": "Atik bro",
+        "level": "beginner",
+        "creator_id": 12,
+        "created_by": "suvrow",
+        "createdAt": "2023-02-07T12:54:35.422Z",
+        "updatedAt": "2023-02-07T12:54:35.422Z",
+        "quiz": []
+    }
+}
+```
+
