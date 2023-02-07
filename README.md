@@ -541,6 +541,34 @@ you can access categorised passages like
  
  Otherwise you will get passages
 
+### GET Assessment Passage Lession 0
+
+#### GET /api/v1/passages/passage/assessment?lession=0
+
+get assessment by this route
+
+##### Response
+
+```json
+{
+    "status": "success",
+    "message": "Passage found with that lession no: 0",
+    "data": {
+        "id": 7,
+        "lession_no": 0,
+        "title": " go",
+        "passage": "Atik vai zindabad, the Passage SDK also provides a way to securely manage your users. These functions require authentication using a Passage API key.",
+        "passage_len": 24,
+        "summary": "Atik bro",
+        "level": "assessment",
+        "creator_id": 1,
+        "created_by": "firoz",
+        "createdAt": "2023-01-28T12:35:41.734Z",
+        "updatedAt": "2023-01-28T12:35:41.734Z",
+        "quiz": []
+    }
+}
+```
 
 #### GET /api/v1/passages/passage?lession=29
 Get a passage
