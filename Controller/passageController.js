@@ -34,7 +34,7 @@ exports.createPassage = catchAsync(async (req, res, next) => {
 
 exports.getPassages = catchAsync(async (req, res, next) => {
   const { level } = req.query;
-  console.log(level)
+  console.log(level);
   let passages;
   if (level) {
     passages = await prisma.passage.findMany({
@@ -100,38 +100,41 @@ exports.getPassage = catchAsync(async (req, res, next) => {
   });
 });
 exports.updatePassage = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
+  const { lession } = req.query;
   const data = {
     title: req.body.title,
     passage: req.body.passage,
     summary: req.body.summary,
     level: req.body.level,
   };
+
   const passage = await prisma.passage.update({
     where: {
-      id: Number(id),
+      lession_no: Number(lession),
     },
     data: data,
   });
   if (!passage) {
-    return next(new AppError(`Passage not found with that id :${id}`, 404));
+    return next(
+      new AppError(`Passage not found with that id :${lession}`, 404)
+    );
   }
 
   res.status(200).json({
     status: "success",
-    message: `Passage updated successfully with that id :${id}`,
+    message: `Passage updated successfully with that id :${lession}`,
   });
 });
 
 exports.deletePassage = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
+  const { lession } = req.query;
   await prisma.passage.delete({
     where: {
-      id: Number(id),
+      lession_no: Number(lession),
     },
   });
   res.status(200).json({
     status: "success",
-    message: `Passage deleted successfully with that id :${id}`,
+    message: `Passage deleted successfully with that id :${lession}`,
   });
 });

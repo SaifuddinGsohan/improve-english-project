@@ -76,6 +76,13 @@ exports.updatePackage = catchAsync(async (req, res, next) => {
 
 exports.deletePackage = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  console.log(id);
+  const find = await prisma.packages.findUnique({
+    where: {
+      id: Number(id),
+    },
+  });
+  console.log(find);
   const package = await prisma.packages.delete({
     where: {
       id: Number(id),
