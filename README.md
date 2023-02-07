@@ -571,3 +571,32 @@ This condition is only for the authenticated user not for admin users. Admin can
 }
 ```
 
+#### PUT /api/v1/passages/passage?lession=29
+
+##### JSON Body Data
+
+```json
+{
+     "title":"Sea Dolphin"
+}
+```
+
+##### Response
+
+```json
+{
+    "status": "success",
+    "message": "Passage updated successfully with that id :29"
+}
+```
+#### DELETE /api/v1/passages/passage?lession=29
+
+##### Response
+
+```json
+{
+    "status": "success",
+    "message": "Passage deleted successfully with that id :30"
+}
+```
+
