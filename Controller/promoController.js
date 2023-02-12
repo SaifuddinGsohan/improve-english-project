@@ -25,7 +25,11 @@ exports.getAllPromoCode = catchAsync(async (req, res, next) => {
   const data = await prisma.promo_code.findMany();
   res
     .status(200)
-    .json({ status: "success", message: "Found All Promo Code", data: data });
+    .json({
+      status: "success",
+      message: `Found All ${data.length} Promo Code`,
+      data: data,
+    });
 });
 
 exports.getAPromoCode = catchAsync(async (req, res, next) => {

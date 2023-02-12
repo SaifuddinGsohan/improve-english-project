@@ -65,7 +65,32 @@ exports.updateCoupon = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.couponPrice = catchAsync(async (req, res, next) => {
+  const { code } = req.query;
+  console.log(code);
+  const couponDetails = await prisma.coupon_code.findFirst({
+    where: {
+      code: code,
+    },
+    select: {
+      discount_amount: true,
+      discount_type: true,
+    },
+  });
+  console.log(couponDetails);
+  if (!couponDetails) {
+    return next(new AppError(`No coupon code found with that code  ${code}`));
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "Getting Coupon code successfully",
+    data: couponDetails,
+  });
+});
+
 exports.deleteCoupon = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
   await prisma.coupon_code.delete({
     where: {
       id: Number(id),

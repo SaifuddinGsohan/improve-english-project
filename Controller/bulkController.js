@@ -137,6 +137,8 @@ exports.getB2bUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+
+
 exports.getAllB2bUsers = catchAsync(async (req, res, next) => {
   const { name } = req.query;
   const users = await prisma.purchase_info.findMany({

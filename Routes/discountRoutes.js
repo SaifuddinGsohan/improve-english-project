@@ -6,6 +6,7 @@ const discountValidation = require("../Validation/discountValidation");
 const router = express.Router();
 
 router.get("/promo/price", promoController.promoPrice);
+router.get("/coupon/price", couponController.couponPrice);
 
 router.use(
   authController.protect,
