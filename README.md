@@ -204,9 +204,9 @@ Create an Admin user
 
 ```json
 {
-  "first_name": "mohidul",
+  "first_name": "Moga",
   "last_name": "alom",
-  "email": "mohidulalom@gmail.com",
+  "email": "mogaalom@gmail.com",
   "password": "1234abcd",
   "confirm_password": "1234abcd",
   "role": "admin",
@@ -434,8 +434,8 @@ Create a new post with this api
 {
   "lession_no": 30,
   "title": " go",
-  "passage": "Atik vai zindabad, the Passage SDK also provides a way to securely manage your users. These functions require authentication using a Passage API key.",
-  "summary": "Atik bro",
+  "passage": "Baten vai zindabad, the Passage SDK also provides a way to securely manage your users. These functions require authentication using a Passage API key.",
+  "summary": "Baten bro",
   "level": "beginner"
 }
 ```
@@ -579,9 +579,9 @@ get assessment by this route
     "id": 7,
     "lession_no": 0,
     "title": " go",
-    "passage": "Atik vai zindabad, the Passage SDK also provides a way to securely manage your users. These functions require authentication using a Passage API key.",
+    "passage": "Baten vai zindabad, the Passage SDK also provides a way to securely manage your users. These functions require authentication using a Passage API key.",
     "passage_len": 24,
-    "summary": "Atik bro",
+    "summary": "Baten bro",
     "level": "assessment",
     "creator_id": 1,
     "created_by": "firoz",
@@ -609,9 +609,9 @@ This condition is only for the authenticated user not for admin users. Admin can
     "id": 13,
     "lession_no": 29,
     "title": " go",
-    "passage": "Atik vai zindabad, the Passage SDK also provides a way to securely manage your users. These functions require authentication using a Passage API key.",
+    "passage": "Baten vai zindabad, the Passage SDK also provides a way to securely manage your users. These functions require authentication using a Passage API key.",
     "passage_len": 24,
-    "summary": "Atik bro",
+    "summary": "Baten bro",
     "level": "beginner",
     "creator_id": 12,
     "created_by": "suvrow",
