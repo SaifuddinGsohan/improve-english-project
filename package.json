@@ -1,7 +1,7 @@
 {
-  "name": "readvive_api",
+  "name": "improve_english_api",
   "version": "1.0.0",
-  "description": "Building Readvive API for Edvive",
+  "description": "improve_english API for Learning",
   "main": "app.js",
   "scripts": {
     "start": "node server.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Edvive/readvive_api.git"
+    "url": "git+https://github.com/Firoz01/improve-english-project.git"
   },
   "keywords": [],
   "author": {
@@ -20,9 +20,9 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Edvive/readvive_api/issues"
+    "url": "https://github.com/Firoz01/improve-english-project/issues"
   },
-  "homepage": "https://github.com/Edvive/readvive_api#readme",
+  "homepage": "https://github.com/Firoz01/improve-english-project#readme",
   "dependencies": {
     "@google-cloud/storage": "^6.9.1",
     "@prisma/client": "^4.10.1",

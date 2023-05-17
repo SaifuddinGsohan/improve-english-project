@@ -12,7 +12,9 @@ const { PORT } = require("./Config/constant");
 const port = PORT || 5000;
 
 const server = app.listen(port, () => {
-  console.log(`The server Readvive is running at port: ${port}`);
+  console.log(
+    `The server english learning project is running at port: ${port}`
+  );
 });
 
 process.on("unhandledRejection", (err) => {
