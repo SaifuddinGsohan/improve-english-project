@@ -1,6 +1,6 @@
-# readvive_api
+# improve-english-project_api
 
-Readvive API is an express endpoint for readvive projects. This project is a web-based application built using Node.js, Express, and Prisma. Its purpose is to provide a platform for which users who want to improve their English reading effectively by providing a user-friendly interface, robust progress bar features, and integration with other productivity tools. Some of the key features include interesting content, categorization, reminders, and quiz. After using this application users can found them more confidence in English reading.
+improve-english-project is an express endpoint. This project is a web-based application built using Node.js, Express, and Prisma. Its purpose is to provide a platform for which users who want to improve their English reading effectively by providing a user-friendly interface, robust progress bar features, and integration with other productivity tools. Some of the key features include interesting content, categorization, reminders, and quiz. After using this application users can found them more confidence in English reading.
 
 ## Technology Stack
 ***
@@ -20,19 +20,19 @@ A list of technologies used within the project:
 |----------|---------------------------|----------
 | NODE_ENV | Env variable mode  | production or development |
 | PORT | Running project in which port | 5000 |
-| JWT_SECRET | JWT token scret | edvive |
+| JWT_SECRET | JWT token scret | "" |
 | JWT_EXPIRES_IN | jwt token expired days | 90d |
 | JWT_COOKIE_EXPIRES_IN  | jwt token cookie expired | 90 |
-| PROJECT_ID  | GCP prject id for using gcp storage |  edvive-364913 |
-| DATABASE_URL | Postgres db url | postgres://edvive:FvOB8A5OFkef1at4lf6Z0uLMVlwvnkVg@dpg-ceta2682i3mj6phhuh80-a.singapore-postgres.render.com/edvive_test_db |
-| PRODUCTION_API_URL | Production server api url | https://readvive.onrender.com |
+| PROJECT_ID  | GCP prject id for using gcp storage |  "" |
+| DATABASE_URL | Postgres db url | "" |
+| PRODUCTION_API_URL | Production server api url | ""|
 | LOCAL_HOST_API_URL  | Local server api url | http://localhost:5000 |
 | AAMAR_PAY_SANDBOX_URL  | Payment getway sandbox url |  https://sandbox.aamarpay.com/jsonpost.php |
 | AAMAR_PAY_SANDBOX_STORE_ID | Payment getway store id | aamarpaytest |
 | AAMAR_PAY_SANDBOX_SIGNATURE_KEY  | Sandbox key |dbb74894e82415a2f7ff0ec3a97e4183 |
-| AAMAR_PAY_PRODUCTION_URL  | Production url |  https://secure.aamarpay.com/jsonpost.php |
-| AAMAR_PAY_PRODUCTION_STORE_ID | Production store id | edvive |
-| AAMAR_PAY_PRODUCTION_SIGNATURE_KEY  | Production key |  5729e8911563793773321ac8d8ac85bb |
+| AAMAR_PAY_PRODUCTION_URL  | Production url |  "" |
+| AAMAR_PAY_PRODUCTION_STORE_ID | Production store id | "" |
+| AAMAR_PAY_PRODUCTION_SIGNATURE_KEY  | Production key |  ""|
 
 
 # Getting Started
@@ -220,8 +220,8 @@ Only a valid admin user can be able to create landing page data
 | KEY | VALUE |
 |----------|----------|
 | images | Screenshot from 2023-01-04 14-37-45.png | 
-| heading | readvive |
-| sub_heading | Learning english with edvive it will great fun |
+| heading | "" |
+| sub_heading | Learning english with  great fun |
 | cta | cta button text | 
 | fa_cta | fa_cta button text | 
 | fa_heading | fa_heading text | 
@@ -289,7 +289,7 @@ By default package status will be true. Later you can change the status to false
 ```json
 {
     "name":"testing",
-    "title":"Testing Effectively with edvive",
+    "title":"Testing Effectively with me",
     "currency": "BDT",
     "price":5000 ,
     "discount": 999,
@@ -321,7 +321,7 @@ get all packages from database
     "data": [
         {
             "id": 1,
-            "name": "edvive english",
+            "name": "Easy english",
             "title": "Learn English Effectively with edvive",
             "currency": "BDT",
             "price": 2000,
@@ -334,7 +334,7 @@ get all packages from database
         {
             "id": 2,
             "name": "testing",
-            "title": "Testing Effectively with edvive",
+            "title": "Testing Effectively with me",
             "currency": "BDT",
             "price": 5000,
             "discount": 999,
@@ -346,7 +346,7 @@ get all packages from database
         {
             "id": 3,
             "name": "testing",
-            "title": "Testing Effectively with edvive",
+            "title": "Testing Effectively with me",
             "currency": "BDT",
             "price": 5000,
             "discount": 999,
@@ -371,8 +371,8 @@ get a package by package id providing in url params
     "message": "Package found with that id:1",
     "data": {
         "id": 1,
-        "name": "edvive english",
-        "title": "Learn English Effectively with edvive",
+        "name": "Easy english",
+        "title": "Learn English Effectively with me",
         "currency": "BDT",
         "price": 2000,
         "discount": 10,
