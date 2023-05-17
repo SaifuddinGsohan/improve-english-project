@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.get("/", (req, res) => {
-  res.status(200).json("Edvive Readvive API 1.0");
+  res.status(200).json("Improve English API 1.0");
 });
 
 app.use("/api/v1/auth", AuthRouter);
